@@ -1,0 +1,12 @@
+.button.highlight {
+    -fx-font-weight: bold;
+}
+.onGrid{
+    -fx-opacity: .2;
+}
+.grid:hover .onGrid{
+    -fx-opacity: .8;
+}
+.canvas{
+    -fx-border-color: #ccccff;
+}

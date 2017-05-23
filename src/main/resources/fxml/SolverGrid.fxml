@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+<AnchorPane
+    id="AnchorPane"
+    prefHeight="700.0"
+    prefWidth="710.0"
+    styleClass="grid"
+    xmlns="http://javafx.com/javafx/8.0.65"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="hu.unideb.inf.nonogramsolver.Controller.SolverGridFXMLController">
+   <children>
+      <Canvas fx:id="grid" height="600.0" width="600.0" />
+      <Pane layoutX="14.0" layoutY="14.0" prefHeight="76.0" prefWidth="121.0" styleClass="onGrid">
+         <children>
+            <Button fx:id="closeBtn" alignment="CENTER" layoutY="44.0" mnemonicParsing="false" onAction="#closeWindow" prefHeight="26.0" prefWidth="121.0" text="Bezár" textAlignment="CENTER" />
+            <Button alignment="CENTER" layoutY="1.0" mnemonicParsing="false" onAction="#saveImageAction" prefHeight="26.0" prefWidth="121.0" text="Kép mentése..." textAlignment="CENTER">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </Button>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

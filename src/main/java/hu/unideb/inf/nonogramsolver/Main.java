@@ -1,7 +1,6 @@
 package hu.unideb.inf.nonogramsolver;
 
-import hu.unideb.inf.nonogramsolver.Controller.MainFXMLController;
-import hu.unideb.inf.nonogramsolver.Controller.SolverController;
+import hu.unideb.inf.nonogramsolver.Controller.FXML.MainFXMLController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,14 +15,8 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainScene.fxml"));
-        Parent root = (Parent)loader.load();
         
-        MainFXMLController controller = loader.<MainFXMLController>getController();
-        
-        SolverController solver = new SolverController();
-        controller.setSolver(solver);
-        
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(loader.load());
         
         scene.getStylesheets().add("/styles/Styles.css");
         

@@ -1,4 +1,4 @@
-package hu.unideb.inf.nonogramsolver.Controller;
+package hu.unideb.inf.nonogramsolver.Controller.FXML;
 
 import hu.unideb.inf.nonogramsolver.Model.NonGenerator;
 import hu.unideb.inf.nonogramsolver.Model.Drawing.PuzzleDrawer;
@@ -95,5 +95,4 @@ public class GeneratorFXMLController implements Initializable{
         PuzzleRawData rawData = this.generator.generateRawData();
         this.mainController.setGeneratedRawData(rawData);
     }
-    
 }

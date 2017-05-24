@@ -13,7 +13,7 @@
     styleClass="grid"
     xmlns="http://javafx.com/javafx/8.0.65"
     xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="hu.unideb.inf.nonogramsolver.Controller.SolverGridFXMLController">
+    fx:controller="hu.unideb.inf.nonogramsolver.Controller.FXML.SolverGridFXMLController">
    <children>
       <Canvas fx:id="grid" height="600.0" width="600.0" />
       <Pane layoutX="14.0" layoutY="14.0" prefHeight="76.0" prefWidth="121.0" styleClass="onGrid">

@@ -7,7 +7,7 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane id="AnchorPane" fx:id="pane" prefHeight="655.0" prefWidth="766.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hu.unideb.inf.nonogramsolver.Controller.GeneratorFXMLController">
+<AnchorPane id="AnchorPane" fx:id="pane" prefHeight="655.0" prefWidth="766.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hu.unideb.inf.nonogramsolver.Controller.FXML.GeneratorFXMLController">
    <children>
       <Canvas fx:id="out" height="553.0" layoutX="10.0" layoutY="88.0" width="747.0" />
       <Slider fx:id="thresholdSlider" layoutX="274.0" layoutY="33.0" majorTickUnit="50.0" max="255.0" minorTickCount="10" prefHeight="38.0" prefWidth="220.0" showTickLabels="true" showTickMarks="true" value="100.0" />

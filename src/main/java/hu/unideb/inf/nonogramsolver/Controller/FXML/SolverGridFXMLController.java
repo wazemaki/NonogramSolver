@@ -1,4 +1,4 @@
-package hu.unideb.inf.nonogramsolver.Controller;
+package hu.unideb.inf.nonogramsolver.Controller.FXML;
 
 import hu.unideb.inf.nonogramsolver.Model.Drawing.PuzzleDrawer;
 import hu.unideb.inf.nonogramsolver.Model.Writers.ImageFileWriter;
@@ -69,9 +69,9 @@ public class SolverGridFXMLController implements Initializable{
         }
     }
     
-    public void setCanvasSizes(int w, int h){
-        this.grid.setWidth(w);
-        this.grid.setHeight(h);
+    public void setCanvasSizes(){
+        this.grid.setWidth(this.drawer.getFullWidth());
+        this.grid.setHeight(this.drawer.getFullHeight());
     }
     
     @Override

@@ -9,7 +9,15 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="454.0" prefWidth="667.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hu.unideb.inf.nonogramsolver.Controller.MainFXMLController">
+<AnchorPane
+    id="AnchorPane"
+    prefHeight="454.0"
+    prefWidth="667.0"
+    xmlns="http://javafx.com/javafx/8.0.65"
+    xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="hu.unideb.inf.nonogramsolver.Controller.FXML.MainFXMLController"
+>
+    
     <children>
       <Pane layoutX="14.0" layoutY="14.0" prefHeight="149.0" prefWidth="639.0">
          <children>
@@ -39,7 +47,7 @@
             </Pane>
          </children>
       </Pane>
-      <TextArea fx:id="logger" editable="false" layoutX="14.0" layoutY="291.0" prefHeight="149.0" prefWidth="639.0" text="-- Nonogram fejtő LOG --" wrapText="true">
+      <TextArea fx:id="loggerArea" editable="false" layoutX="14.0" layoutY="291.0" prefHeight="149.0" prefWidth="639.0" text="-- Nonogram fejtő LOG --" wrapText="true">
          <font>
             <Font name="System Italic" size="13.0" />
          </font>

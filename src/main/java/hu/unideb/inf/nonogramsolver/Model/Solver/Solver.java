@@ -5,28 +5,17 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- *
+ * Maga a fejtő.
  * @author wazemaki
  */
 public class Solver implements Runnable{
     private final SolverController controller;
     
-    protected int width,
+    protected final int width, height;
 
-    /**
-     *
-     */
-    height;
-
-    /**
-     *
-     */
     protected boolean isEnd;
     
-    /**
-     *
-     */
-    public int active;
+    private int active;
     
     private final Row slaveRow;
     private final Row fixBrow, fixWrow;
@@ -35,32 +24,24 @@ public class Solver implements Runnable{
     private final boolean[] changedCols, changedRows;
 
     /**
-     *
+     * 
      */
-    protected PuzzleBackup back;
-    protected int colTip,
-
-    /**
-     *
-     */
-    rowTip;
+    protected PuzzleBackup backUp;
+    protected int colTip, rowTip;
     
-    private final List<List<Integer> > puzzleCols, puzzleRows; //a feladvanyban szereplo oszlopok, sorok szamai
+    private final List<List<Integer> > puzzleCols, puzzleRows;
     
-    /**
-     *
-     */
-    public boolean isRow;
+    private boolean isRow;
     private boolean error;
     private final boolean enableBackup;
     private final boolean enablePrior;
-    private String errorMessage;
     private boolean isStopped = false;
     
     /**
-     *
+     * 
      */
     protected int[][] grid;
+    
     /**
      * A prioritas szamolasahoz szuksegesek!
     */
@@ -69,15 +50,15 @@ public class Solver implements Runnable{
     // --------------------------------
     
     /**
-     *
-     * @param cols
-     * @param rows
-     * @param c
-     * @param enBackup
-     * @param enPrior
+     * A fejtő Konstruktora
+     * @param cols A rejtvényben szereplő oszlopok
+     * @param rows A rejtvényben szereplő sorok
+     * @param controller Kontroller, melynek segítségével kezelhetjük az eseményeket
+     * @param enBackup Backup-ok (próbálkozások) engedélyezése
+     * @param enPrior Prioritás szerinti fejtés engedélyezése
      */
-    public Solver(List<List<Integer> > cols, List<List<Integer> > rows, SolverController c, boolean enBackup, boolean enPrior){
-        this.controller = c;
+    public Solver(List<List<Integer> > cols, List<List<Integer> > rows, SolverController controller, boolean enBackup, boolean enPrior){
+        this.controller = controller;
         
         this.enableBackup = enBackup;
         this.enablePrior = enPrior;
@@ -107,7 +88,7 @@ public class Solver implements Runnable{
         
         this.changedCols = new boolean[this.width];
         this.changedRows = new boolean[this.height];
-        this.back = null;
+        this.backUp = null;
         
         for(int i = 0; i < this.width; i++){
             this.changedCols[i] = true;
@@ -118,16 +99,15 @@ public class Solver implements Runnable{
         for(int i = 0; i < this.height; i++){
             this.changedRows[i] = true;
         }
-    
     }
        
     /**
-     *
-     * @param row
-     * @param col
-     * @return
+     * Egy mező aktuális színét adja vissza
+     * @param row A mező sorának indexe
+     * @param col A mező oszlopának indexe
+     * @return A mező színe (-1, ha még nincs megfejtve, vagy az indexek valamelyike hibás)
      */
-    public int get(int row,int col){ // egyetlen kocka szinet adja
+    public int get(int row, int col){ // egyetlen kocka szinet adja
         if(row < this.height && col < this.width){
             return this.grid[col][row];
         } else {
@@ -136,14 +116,23 @@ public class Solver implements Runnable{
     }
        
     /**
-     *
-     * @return
+     * A négyzetrácsot adja vissza
+     * @return A rejtvény kétdimenziós rácsa
      */
     public int[][] getGrid(){
         return this.grid;
     }
     
-    private boolean set(int row, int col, int color){ //egyetlen kockat allit, visszatér igazzal, ha válzotott a kocka
+    /**
+     * A fejtő aktuális sor/oszlop állapotát adja.
+     * @return Igaz(true), ha az aktuális állapot SOR.
+     *  Hamis(false), ha az aktuális állapot OSZLOP.
+     */
+    public boolean getIsRow(){
+        return this.isRow;
+    }
+    
+    private boolean set(int row, int col, int color){ //egyetlen kockat allit, visszatér igazzal, ha változott a kocka
         int orig = -1;
         if(row < this.height && col < this.width){
             orig = this.grid[col][row];
@@ -152,7 +141,7 @@ public class Solver implements Runnable{
         return (orig != color);
     }
     
-    private Row getRC(int index, int color, int outColor){ //visszaad egy sort vagy oszlopot, egySor formaban
+    private Row getLine(int index, int color, int outColor){ //visszaad egy sort vagy oszlopot, egySor formaban
         int len = (this.isRow) ? this.width : this.height;
         Row row = new Row(len);
         for(int i = 0; i < len; i++){
@@ -169,7 +158,7 @@ public class Solver implements Runnable{
         return row;
     }
 
-    private void setRC(int index, Row row){ // egesz sort/oszlopot allit
+    private void setLine(int index, Row row){ // egesz sort/oszlopot allit
         int len = (this.isRow) ? this.width : this.height;
         for(int i = 0; i < len; i++){
             if(row.get(i) > -1){
@@ -207,7 +196,7 @@ public class Solver implements Runnable{
         return sum;
     }
     
-    private boolean compareRC(int index, Row row, int len){ //megallapitja, hogy a megadott sorreszlet egy lehetseges megoldas-e
+    private boolean compare(int index, Row row, int len){ //megallapitja, hogy a megadott sorreszlet egy lehetseges megoldas-e
         if(len == 0) len = row.getLength();
         for(int i = 0; i < len; i++){            
             if(this.isRow && this.grid[i][index] > -1 && this.grid[i][index] != row.get(i)){
@@ -221,7 +210,7 @@ public class Solver implements Runnable{
         return true;
     }
     
-    private int selectPrior(boolean onlyChanged, boolean emptyRows){
+    private int selectByPrior(boolean onlyChanged, boolean emptyRows){
         float maxprior = -2;
         float prior;
         int index = -1;
@@ -274,10 +263,10 @@ public class Solver implements Runnable{
                     .append(this.puzzleRows.get(row).get(recur),1)
                     .set(-1,-1,0);
 
-            if(ok && recur < numBlocks-1 && this.compareRC(row,this.slaveRow,this.slaveRow.getIndex())){
+            if(ok && recur < numBlocks-1 && this.compare(row,this.slaveRow,this.slaveRow.getIndex())){
                 ok = this.potentialRow(row, dif - i, recur + 1);
             }
-            if(recur >= numBlocks - 1 && this.compareRC(row,this.slaveRow,0)){
+            if(recur >= numBlocks - 1 && this.compare(row,this.slaveRow,0)){
                 this.error = false;
                 this.fixBrow.logic_AND(this.slaveRow,1);
                 this.fixWrow.logic_AND(this.slaveRow,0);
@@ -299,10 +288,10 @@ public class Solver implements Runnable{
                     .append(i + whites, 0)
                     .append(this.puzzleCols.get(col).get(recur),1)
                     .set(-1,-1,0);
-            if(ok && recur < numBlocks - 1 && this.compareRC(col,this.slaveCol,this.slaveCol.getIndex())){
+            if(ok && recur < numBlocks - 1 && this.compare(col,this.slaveCol,this.slaveCol.getIndex())){
                 ok = this.potentialCol(col, dif - i, recur + 1);
             }
-            if(recur >= numBlocks - 1 && this.compareRC(col,this.slaveCol,0)){
+            if(recur >= numBlocks - 1 && this.compare(col,this.slaveCol,0)){
                 this.error = false;
                 this.fixBcol.logic_AND(this.slaveCol,1);
                 this.fixWcol.logic_AND(this.slaveCol,0);
@@ -316,11 +305,11 @@ public class Solver implements Runnable{
     
     private void fix(int index){ // Meghatarozza azokat a mezoket, amik biztosan feketek, es kitolti a 'kulonsegek' es 'atlag' tombot.
         int sum = 0;
-        List<Integer> a = (this.isRow) ? this.puzzleRows.get(index) : this.puzzleCols.get(index);
-        int pcs = a.size();
+        List<Integer> line = (this.isRow) ? this.puzzleRows.get(index) : this.puzzleCols.get(index);
+        int pcs = line.size();
         int len = (this.isRow) ? this.width : this.height;
         
-        for(int i : a){
+        for(int i : line){
             sum += i;
         }
         
@@ -337,7 +326,7 @@ public class Solver implements Runnable{
             Row end = new Row(len);
             Row slave = new Row(len);
             end.setIndex(dif);
-            for(int i : a){
+            for(int i : line){
                 begin.append(i, 1)
                         .stepIndex();
                 end.append(i, 1)
@@ -347,21 +336,21 @@ public class Solver implements Runnable{
                 begin.set(0,-1,-1);
                 end.set(0,-1,-1);
             }
-            this.setRC(index,slave);
+            this.setLine(index,slave);
         } else {
             this.isEnd = true;
         }
     }
     
-    private void backUpCopy(PuzzleBackup bk){
-        this.isEnd = bk.isEnd;
+    private void backUpCopy(PuzzleBackup backup){
+        this.isEnd = backup.isEnd;
         this.error = false;
-        this.back = bk.back;
-        this.colTip = bk.colTip;
-        this.rowTip = bk.rowTip;
+        this.backUp = backup.back;
+        this.colTip = backup.colTip;
+        this.rowTip = backup.rowTip;
         
         for(int i = 0; i < this.width; i++){
-            this.grid[i] = Arrays.copyOf(bk.grid[i], this.height);
+            this.grid[i] = Arrays.copyOf(backup.grid[i], this.height);
             this.changedCols[i] = false;
         }
         for(int i = 0; i < height; i++){
@@ -370,8 +359,8 @@ public class Solver implements Runnable{
     }
     
     private boolean backUp(){
-        if(this.back != null){
-            this.backUpCopy(this.back); //visszaallitjuk
+        if(this.backUp != null){
+            this.backUpCopy(this.backUp); //visszaallitjuk
             this.set(this.rowTip,this.colTip,1);
             this.changedCols[this.colTip] = true;
             this.changedRows[this.rowTip] = true;
@@ -399,7 +388,7 @@ public class Solver implements Runnable{
     }
         
     private boolean takeTip(){
-        int index = this.selectPrior(false,true);
+        int index = this.selectByPrior(false,true);
         if(this.isRow){
             for(int i = 0; i < this.width; i++){
                 if(this.grid[i][index] == -1) {
@@ -419,7 +408,10 @@ public class Solver implements Runnable{
         }
         return false;
     }
-    
+        
+    /**
+     * A fejtés indítása
+     */
     @Override
     public void run(){
         this.controller.callOnStart("");
@@ -436,7 +428,7 @@ public class Solver implements Runnable{
         while(!this.isEnd){
             this.isEnd = true;
             if(this.enablePrior){
-                index = this.selectPrior(true, false);
+                index = this.selectByPrior(true, false);
             } else {
                 if((this.isRow && ++index == this.height) || (!this.isRow && ++index == this.width)){
                     index = 0;
@@ -448,20 +440,20 @@ public class Solver implements Runnable{
                 this.error = true;
                 if(this.isRow){
                     this.slaveRow.setIndex(0);
-                    this.fixBrow.setByRow( this.getRC(index,-1,1), false );
-                    this.fixWrow.setByRow( this.getRC(index,-1,0), false );
+                    this.fixBrow.setByRow( this.getLine(index,-1,1), false );
+                    this.fixWrow.setByRow( this.getLine(index,-1,0), false );
                     if( this.potentialRow(index,this.rowDif[index],0) ){
-                        this.setRC(index,this.fixBrow);
-                        this.setRC(index,this.fixWrow);
+                        this.setLine(index,this.fixBrow);
+                        this.setLine(index,this.fixWrow);
                     }
                     this.changedRows[index] = false;
                 } else {
                     this.slaveCol.setIndex(0);
-                    this.fixBcol.setByRow( this.getRC(index,-1,1), false );
-                    this.fixWcol.setByRow( this.getRC(index,-1,0), false );
+                    this.fixBcol.setByRow( this.getLine(index,-1,1), false );
+                    this.fixWcol.setByRow( this.getLine(index,-1,0), false );
                     if( this.potentialCol(index,this.colDif[index],0) ){
-                        this.setRC(index,this.fixBcol);
-                        this.setRC(index,this.fixWcol);
+                        this.setLine(index,this.fixBcol);
+                        this.setLine(index,this.fixWcol);
                     }
                     this.changedCols[index] = false;
                 }
@@ -479,7 +471,7 @@ public class Solver implements Runnable{
             }
             if(this.isEnd && !this.isComplete()){
                 if(this.enableBackup && this.takeTip()){
-                    this.back = new PuzzleBackup(this);
+                    this.backUp = new PuzzleBackup(this);
                     this.set(this.rowTip,this.colTip,0);
                     this.changedCols[this.colTip] = true;
                     this.changedRows[this.rowTip] = true;
@@ -501,42 +493,37 @@ public class Solver implements Runnable{
     }
     
     /**
-     *
+     * A fejtés leállítása
      */
     public void stop(){
         this.isStopped = true;
     }
     
     /**
-     *
-     * @return
+     * Az aktuálisan aktív sor/oszlop indexét adja vissza
+     * @return Aktuális sor/oszlop index
      */
-    public int getActive(){
+    public int getActiveLine(){
         return this.active;
     }
     
-    /**
-     *
-     * @param index
-     * @param txt
-     */
-    public void print(int index, String txt){
-        txt += ": ";
+    private String print(int index, String text){
+        text += ": ";
         int len = (this.isRow)?this.width:this.height;
         for(int i=0; i < len; i++){
             int dt = (this.isRow)?this.grid[i][index]:this.grid[index][i];
             switch (dt) {
             case -1:
-                txt += "-";
+                text += "-";
                 break;
             case 0:
-                txt += "O";
+                text += "O";
                 break;
             case 1:
-                txt += "I";
+                text += "I";
                 break;
             }
         }
-        System.out.println(txt);
+        return text;
     }
 }

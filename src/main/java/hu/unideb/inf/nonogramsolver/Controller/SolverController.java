@@ -131,7 +131,7 @@ public class SolverController {
     
     public void callOnRedraw(){
         if(this.redrawEvent != null && this.puzzle != null){
-            this.drawData.setData(this.puzzle.getGrid(), this.puzzle.isRow, this.puzzle.getActive());
+            this.drawData.setData(this.puzzle.getGrid(), this.puzzle.getIsRow(), this.puzzle.getActiveLine());
             this.redrawEvent.run(this.drawData);
         }
     }

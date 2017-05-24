@@ -6,8 +6,10 @@
     <artifactId>NonogramSolver</artifactId>
     <version>2.0</version>
     <packaging>jar</packaging>
+    <url>https://github.com/wazemaki/NonogramSolver</url>
 
-    <name>NonogramSolver</name>
+    <name>Nonogram Solver</name>
+    
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,17 +22,29 @@
         <developer>
             <email>wazemaki@gmail.com</email>
             <name>Mátó Attila Zoltán</name>
+            <url>https://github.com/wazemaki</url>
+            <id>wazemaki</id>
             <organization></organization>
         </developer>
     </developers>
 
     <organization>
-        <!-- Used as the 'Vendor' for JNLP generation -->
         <name>Debreceni Egyetem</name>
     </organization>
+    
+    <scm>
+        <url>https://github.com/wazemaki/NonogramSolver</url>
+        <connection>scm:git:git://github.com/wazemaki/NonogramSolver.git</connection>
+    </scm>
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.6</version>
+            </plugin>
+            
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -127,24 +141,65 @@
                         <id>check</id>
                     </execution>
                 </executions>
-                <configuration>
-                    <foo>bar</foo>
-                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>1.4.1</version>
+                <executions>
+                    <execution>
+                        <id>enforce-java-version</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireJavaVersion>
+                                    <version>1.8</version>
+                                </requireJavaVersion>
+                                <requireProperty>
+                                    <property>java.vendor</property>
+                                    <regex>^Oracle Corporation$</regex>
+                                </requireProperty>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.7</version>
             </plugin>
         </plugins>
     </build>
+    
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.5</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.20</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.4</version>
+            </plugin>
+        </plugins>
+    </reporting>
+    
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate.javax.persistence</groupId>
-            <artifactId>hibernate-jpa-2.1-api</artifactId>
-            <version>1.0.0.Final</version>
-            <type>jar</type>
         </dependency>
     </dependencies>
 </project>

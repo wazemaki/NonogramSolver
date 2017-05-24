@@ -12,21 +12,19 @@ public class PuzzleBackup {
     protected PuzzleBackup back;
     protected int colTip, rowTip;
     protected int[][] grid;
-    private boolean isRow, error;
     
-    public PuzzleBackup(Solver p){
-        this.height = p.height;
-        this.width = p.width;
-        this.isEnd = p.isEnd;
-        this.error = false;
-        this.back = p.back;
-        this.colTip = p.colTip;
-        this.rowTip = p.rowTip;
+    public PuzzleBackup(Solver solver){
+        this.height = solver.height;
+        this.width = solver.width;
+        this.isEnd = solver.isEnd;
+        this.back = solver.backUp;
+        this.colTip = solver.colTip;
+        this.rowTip = solver.rowTip;
 
         this.grid = new int[this.width][this.height];
 
         for(int i = 0; i<this.width; i++){
-            this.grid[i] = Arrays.copyOf(p.grid[i], this.height);
+            this.grid[i] = Arrays.copyOf(solver.grid[i], this.height);
         }
     }
     

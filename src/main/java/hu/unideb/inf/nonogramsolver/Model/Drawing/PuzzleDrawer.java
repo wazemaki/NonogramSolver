@@ -10,6 +10,7 @@ import javafx.scene.text.Font;
  * @author wazemaki
  */
 public class PuzzleDrawer {
+    
     private final GraphicsContext gc;
     private boolean drawGrid;
     private boolean drawNumbers;
@@ -43,7 +44,7 @@ public class PuzzleDrawer {
         return this.fullHeightPx;
     }
     
-    public void setSizes(int w, int h, int maxW, int maxH){
+    public void setSizes(int w, int h, Integer maxW, Integer maxH){
         this.width = w;
         this.height = h;
                 
@@ -55,6 +56,13 @@ public class PuzzleDrawer {
         
         int fullW = this.width + this.xOffset;
         int fullH = this.height + this.yOffset;
+        
+        if(maxW == null || maxW < fullW * 2){
+            maxW = fullW * 2;
+        }
+        if(maxH == null || maxH < fullH * 2){
+            maxH = fullH * 2;
+        }
         
         float hProp = (float)(maxH / fullH);
         float wProp = (float)(maxW / fullW);

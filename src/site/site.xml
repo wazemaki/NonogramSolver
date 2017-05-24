@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/DECORATION/1.7.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/DECORATION/1.7.0 http://maven.apache.org/xsd/decoration-1.7.0.xsd">
+	<bannerLeft>
+		<name>Left Banner</name>
+		<src>images/logo.png</src>
+		<href>http://www.inf.unideb.hu/</href>
+	</bannerLeft>
+	<body>
+		<links>
+			<item name="The Apache Software Foundation" href="http://www.apache.org"/>
+			<item name="Apache Maven" href="http://maven.apache.org/"/>
+		</links>
+		<menu name="Examples">
+			<item name="APT Example" href="apt-example.html"/>
+			<item name="Markdown Example" href="markdown-example.html"/>
+			<item name="FML Example" href="fml-example.html"/>
+			<item name="XHTML Example" href="xhtml-example.html"/>
+		</menu>
+		<menu ref="reports"/>
+	</body>
+</project>

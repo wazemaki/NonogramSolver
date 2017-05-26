@@ -22,7 +22,7 @@ import org.w3c.dom.Element;
  */
 public class XMLFileWriter {
 
-    private PuzzleRawData rawData;
+    private final PuzzleRawData rawData;
 
     public XMLFileWriter(PuzzleRawData data) {
         this.rawData = data;

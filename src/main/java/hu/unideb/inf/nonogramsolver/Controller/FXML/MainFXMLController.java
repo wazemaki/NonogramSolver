@@ -67,11 +67,11 @@ public class MainFXMLController extends MainController implements Initializable{
             try {
                 this.loadPuzzleFromFile(file);
             } catch (SolverException ex) {
-                LOGGER.log(Level.WARNING, "A fájl megnyitása sikertelen volt ["+ file.getName() +"]:\n " + ex.getMessage());
+                LOGGER.log(Level.WARNING, "A fájl megnyitása sikertelen volt [{0}]:\n {1}", new Object[]{file.getName(), ex.getMessage()});
             } catch (IOException ex) {
-                LOGGER.log(Level.WARNING, "A művelet során IO hiba történt ["+ file.getName() +"]:\n " + ex.getMessage());
+                LOGGER.log(Level.WARNING, "A művelet során IO hiba történt [{0}]:\n {1}", new Object[]{file.getName(), ex.getMessage()});
             } catch (Exception ex) {
-                LOGGER.log(Level.WARNING, "Ismeretlen hiba ["+ file.getName() +"]:\n " + ex.getMessage());
+                LOGGER.log(Level.WARNING, "Ismeretlen hiba [{0}]:\n {1}", new Object[]{file.getName(), ex.getMessage()});
             }
         }
     }
@@ -87,17 +87,18 @@ public class MainFXMLController extends MainController implements Initializable{
             showFileData("--- WEBPBN.COM " + id + " ---"
                     + "\n< " + rawData.getSizeX() + " x " + rawData.getSizeY() + " >\n"
                     + rawData.getDescription());
-            LOGGER.log(Level.CONFIG, "File importálva: " + id);
+            LOGGER.log(Level.CONFIG, "File importálva: {0}", id);
         } catch(SolverException | IOException ex){
-            LOGGER.log(Level.WARNING, "Importálás sikertelen\n " + ex.getMessage());
+            LOGGER.log(Level.WARNING, "Importálás sikertelen\n {0}", ex.getMessage());
         }
     }
 
     @FXML
     private void startSolveAction(ActionEvent e) {
         try {
-            this.drawer = this.showSolverWindow();
-            this.solverController.solve(this.enBackup.isSelected(), this.enPrior.isSelected());
+            this.initSolver();
+            this.showSolverWindow();
+            this.startSolve(this.enBackup.isSelected(), this.enPrior.isSelected());
         } catch (IOException | SolverException ex) {
             LOGGER.log(Level.WARNING, ex.getMessage());
         }
@@ -155,26 +156,26 @@ public class MainFXMLController extends MainController implements Initializable{
             try {
                 XMLFileWriter fw = new XMLFileWriter(this.solverController.getRawData());
                 fw.write(file);
-                LOGGER.log(Level.INFO, "Fájl elmentve: " + file.getName());
+                LOGGER.log(Level.INFO, "Fájl elmentve: {0}", file.getName());
             } catch (IOException | TransformerException | ParserConfigurationException ex) {
-                LOGGER.log(Level.WARNING, "A fájl mentése sikertelen volt ["+file.getName()+"] :\n " + ex.getMessage());
+                LOGGER.log(Level.WARNING, "A fájl mentése sikertelen volt [{0}] :\n {1}", new Object[]{file.getName(), ex.getMessage()});
             }
         }
     }
 
-    private PuzzleDrawer showSolverWindow() throws IOException {
+    private void showSolverWindow() throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/fxml/SolverGrid.fxml"));
         Parent root = (Parent) fxmlLoader.load();
         SolverGridFXMLController controller = fxmlLoader.<SolverGridFXMLController>getController();
         
-        PuzzleDrawer pDrawer = controller.getDrawer();
+        this.drawer = controller.getDrawer();
         
         if (this.showNumbers.isSelected()) {
-            pDrawer.setNumbers(this.solverController.getRawData());
-            pDrawer.setDrawNumbers(true);
+            this.drawer.setNumbers(this.solverController.getRawData());
+            this.drawer.setDrawNumbers(true);
         }
         if (this.showGrid.isSelected()) {
-            pDrawer.setDrawGrid(true);
+            this.drawer.setDrawGrid(true);
         }
         
         Integer maxW = null, maxH = null;
@@ -184,7 +185,7 @@ public class MainFXMLController extends MainController implements Initializable{
         } catch (NumberFormatException e) {
         }
         
-        pDrawer.setSizes(
+        this.drawer.setSizes(
                 this.solverController.getSizeX(),
                 this.solverController.getSizeY(),
                 maxW, maxH);
@@ -193,7 +194,7 @@ public class MainFXMLController extends MainController implements Initializable{
         Stage stage = new Stage();
         stage.setTitle("Nonogram fejtő");
         
-        Scene scene = new Scene(root, pDrawer.getFullWidth(), pDrawer.getFullHeight());
+        Scene scene = new Scene(root, this.drawer.getFullWidth(), this.drawer.getFullHeight());
         scene.getStylesheets().add("/styles/Styles.css");
         stage.setScene(scene);
         stage.show();
@@ -201,8 +202,6 @@ public class MainFXMLController extends MainController implements Initializable{
         stage.setOnCloseRequest((e) -> {
             solverController.stopSolving();
         });
-        
-        return pDrawer;
     }
 
     private void loadPuzzleFromFile(File file) throws IOException, SolverException, Exception{

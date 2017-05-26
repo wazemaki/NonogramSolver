@@ -78,13 +78,7 @@ public class SolverController {
         return this.rawData.getSizeY();
     }
     
-    public void solve(boolean enBackup, boolean enPrior) throws SolverException{
-        if(!this.checkIsFree()){
-            throw new SolverException("A fejtő foglalt.\n  Várjuk meg, amíg befejezi, vagy állítsuk meg!",3);
-        }
-        if(!this.isValidPuzzle()){
-            throw new SolverException("Érvénytelen rejtvény, valószínűleg sorok,vagy oszlopok hiányoznak.",2);
-        }
+    public void solve(boolean enBackup, boolean enPrior){
         this.puzzle = new Solver(this.rawData.getCols(),this.rawData.getRows(),this,enBackup,enPrior);
         this.thread = new Thread (this.puzzle, "Solving");
         this.thread.start();

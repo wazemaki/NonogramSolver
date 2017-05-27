@@ -1,35 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <version>3.0</version>
+    <packaging>jar</packaging>
 
     <groupId>hu.unideb.inf</groupId>
     <artifactId>NonogramSolver</artifactId>
-    <version>2.0</version>
-    <packaging>jar</packaging>
-    <url>https://github.com/wazemaki/NonogramSolver</url>
 
     <name>Nonogram Solver</name>
     <inceptionYear>2016</inceptionYear>
+    
+    <url>https://github.com/wazemaki/NonogramSolver</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <mainClass>hu.unideb.inf.nonogramsolver.Main</mainClass>
     </properties>
+    
     <description>
-        Java Nonogram fejtő, letöltő, generáló
+        Java Nonogram solver, downloader, generator
     </description>
+    
     <developers>
         <developer>
             <email>wazemaki@gmail.com</email>
-            <name>Mátó Attila Zoltán</name>
+            <name>Attila Zoltán Mátó</name>
             <url>https://github.com/wazemaki</url>
             <id>wazemaki</id>
-            <organization></organization>
+            <roles>
+                <role>developer</role>
+            </roles>
         </developer>
     </developers>
 
     <organization>
-        <name>Debreceni Egyetem</name>
+        <name>University of Debrecen</name>
     </organization>
     
     <licenses>
@@ -39,10 +45,26 @@
         </license>
     </licenses>
     
+    <prerequisites>
+        <maven>3.0</maven>
+    </prerequisites>
+    
     <scm>
         <url>https://github.com/wazemaki/NonogramSolver</url>
         <connection>scm:git:git://github.com/wazemaki/NonogramSolver.git</connection>
     </scm>
+    
+    <contributors>
+        <contributor>
+            <name>Arabella Tonhajzer</name>
+            <email>bella@emtce.hu</email>
+            <roles>
+                <role>Working environment manager</role>
+                <role>Nutrition provider</role>
+                <role>Psychological assistance</role>
+            </roles>
+        </contributor>
+    </contributors>
 
     <build>
         <plugins>

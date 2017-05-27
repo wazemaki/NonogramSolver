@@ -1,6 +1,5 @@
 package hu.unideb.inf.nonogramsolver.Model;
 
-import hu.unideb.inf.nonogramsolver.Model.Solver.SolverException;
 import hu.unideb.inf.nonogramsolver.Model.Readers.StreamReader;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,8 +14,18 @@ import java.net.URL;
  */
 public class WEBImporter{ 
     
+    /**
+     *
+     */
     public static final String URI = "http://webpbn.com/export.cgi";
     
+    /**
+     *
+     * @param id
+     * @return
+     * @throws IOException
+     * @throws SolverException
+     */
     public static PuzzleRawData importPuzzle(String id) throws IOException, SolverException {
         
         URL url = new URL(URI + "?go=1&fmt=ss&id=" + id);

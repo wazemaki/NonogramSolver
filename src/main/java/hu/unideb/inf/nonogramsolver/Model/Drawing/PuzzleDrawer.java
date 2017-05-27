@@ -20,30 +20,63 @@ public class PuzzleDrawer {
     
     private PuzzleRawData numbers;
     
+    /**
+     * Konstruktor.
+     * @param gc {@link GraphicsContext} objektum.
+     */
     public PuzzleDrawer(GraphicsContext gc){
         this.gc = gc;
     }
     
+    /**
+     * A számok kirajzolását engedélyezi, vagy tiltja.
+     * @param isset Igaz({@code true}): Engedélyez
+     * Hamis({@code false}): Tilt
+     */
     public void setDrawNumbers(boolean isset){
         this.drawNumbers = isset;
     }
     
+    /**
+     * A rács kirajzolását engedélyezi, vagy tiltja.
+     * @param isset Igaz({@code true}): Engedélyez
+     * Hamis({@code false}): Tilt
+     */
     public void setDrawGrid(boolean isset){
         this.drawGrid = isset;
     }
     
+    /**
+     * A rajzolandó számokat állítja be {@link PuzzleRawData} objektum alapján.
+     * @param numbers <code>{@link PuzzleRawData}</code> objektum
+     */
     public void setNumbers(PuzzleRawData numbers){
         this.numbers = numbers;
     }
     
+    /**
+     * A rajzolási terület teljes szélességét adja vissza.
+     * @return Szélesség pixelben.
+     */
     public int getFullWidth(){
         return this.fullWidthPx;
     }
     
+    /**
+     * A rajzolási terület teljes magasságát adja vissza.
+     * @return Magasság pixelben.
+     */
     public int getFullHeight(){
         return this.fullHeightPx;
     }
     
+    /**
+     * A rajzolási terület és a rács méreteit számolja ki, és állítja be.
+     * @param w A rejtvény szélessége (oszlopok száma)
+     * @param h A rejtvény magassága (sorok száma)
+     * @param maxW Az engedélyezett maximális szélesség pixelben
+     * @param maxH Az engedélyezett maximális magasság pixelben
+     */
     public void setSizes(int w, int h, Integer maxW, Integer maxH){
         this.width = w;
         this.height = h;
@@ -77,7 +110,11 @@ public class PuzzleDrawer {
         
     }
     
-    public boolean redraw(DrawingData toDraw) {
+    /**
+     * Rajzol.
+     * @param toDraw Rajzolandó <code>{@link DrawingData}</code> objektum.
+     */
+    public void redraw(DrawingData toDraw) {
         gc.setFill(Color.LIGHTGREY);
         gc.fillRect(0, 0, this.gc.getCanvas().getWidth(), this.gc.getCanvas().getHeight());
         
@@ -117,10 +154,9 @@ public class PuzzleDrawer {
         if(this.drawNumbers && this.numbers != null){
             this.drawNumbers();
         }
-        return true;
     }
     
-    public void drawGrid(){
+    private void drawGrid(){
         gc.setLineWidth(1);
         gc.setStroke(Color.GREY);
         for(int i = 0; i <= this.width; i++){ //fuggo vonalak
@@ -134,7 +170,7 @@ public class PuzzleDrawer {
         }
     }
     
-    public void drawNumbers(){
+    private void drawNumbers(){
         gc.setFill(Color.BLACK);
         gc.setFont(new Font( this.gridSize * 0.7));
         

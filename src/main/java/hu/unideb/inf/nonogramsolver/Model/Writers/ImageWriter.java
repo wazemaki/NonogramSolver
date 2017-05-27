@@ -9,25 +9,41 @@ import javafx.scene.image.WritableImage;
 import javax.imageio.ImageIO;
 
 /**
- *
+ * Kép-formátumú fájlt hoz létre <code>{@link WritableImage}</code> objektumból.
  * @author wazemaki
  */
-public class ImageFileWriter {
+public class ImageWriter {
     
     private WritableImage writableImage;
     
-    public ImageFileWriter(){
+    /**
+     * Konstruktor.
+     */
+    public ImageWriter(){
         this.writableImage = null;
     }
     
-    public ImageFileWriter(WritableImage image){
+    /**
+     * Konstruktor.
+     * @param image
+     */
+    public ImageWriter(WritableImage image){
         this.writableImage = image;
     }
     
+    /**
+     * Konstruktor.
+     * @param image
+     */
     public void setImage(WritableImage image){
         this.writableImage = image;
     }
     
+    /**
+     * Képfájl írása.
+     * @param file Az arandó file objektuma.
+     * @throws IOException
+     */
     public void write(File file) throws IOException{
 
         RenderedImage renderedImage = SwingFXUtils.fromFXImage(this.writableImage, null);

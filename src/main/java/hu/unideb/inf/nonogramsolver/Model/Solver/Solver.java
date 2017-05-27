@@ -11,8 +11,14 @@ import java.util.List;
 public class Solver implements Runnable{
     private final SolverController controller;
     
+    /**
+     * A rejtvény méretei
+     */
     protected final int width, height;
 
+    /**
+     * A fejtés végét jelző flag.
+     */
     protected boolean isEnd;
     
     private int active;
@@ -24,9 +30,13 @@ public class Solver implements Runnable{
     private final boolean[] changedCols, changedRows;
 
     /**
-     * 
+     * Back-up objektum, amely tippelés esetén tárolja a fejtő egy korábi állapotát.
      */
     protected PuzzleBackup backUp;
+    
+    /**
+     * Aktuális tippelés koordinátái
+     */
     protected int colTip, rowTip;
     
     private final List<List<Integer> > puzzleCols, puzzleRows;
@@ -38,7 +48,7 @@ public class Solver implements Runnable{
     private boolean isStopped = false;
     
     /**
-     * 
+     * Négyzetrács, amely tárolja a fejtés aktuális állapotát.
      */
     protected int[][] grid;
     

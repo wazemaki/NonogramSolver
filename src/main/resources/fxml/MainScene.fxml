@@ -9,20 +9,13 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane
-    id="AnchorPane"
-    prefHeight="454.0"
-    prefWidth="667.0"
-    xmlns="http://javafx.com/javafx/8.0.65"
-    xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="hu.unideb.inf.nonogramsolver.Controller.FXML.MainFXMLController"
->
+<AnchorPane id="AnchorPane" prefHeight="454.0" prefWidth="667.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="hu.unideb.inf.nonogramsolver.Controller.GUI.MainFXMLController">
     
     <children>
       <Pane layoutX="14.0" layoutY="14.0" prefHeight="149.0" prefWidth="639.0">
          <children>
             <Label fx:id="label" alignment="CENTER" layoutX="217.0" minHeight="16" minWidth="69" prefHeight="149.0" prefWidth="422.0" text="-- Nincs megnyitva fájl --" textAlignment="CENTER" wrapText="true" />
-            <Button alignment="CENTER" layoutX="6.0" layoutY="1.0" mnemonicParsing="false" onAction="#openFileChooserAction" prefHeight="26.0" prefWidth="203.0" text="Fájl megnyitása..." textAlignment="CENTER" />
+            <Button alignment="CENTER" layoutX="6.0" layoutY="1.0" mnemonicParsing="false" onAction="#openFileAction" prefHeight="26.0" prefWidth="203.0" text="Fájl megnyitása..." textAlignment="CENTER" />
             <Button alignment="CENTER" layoutX="70.0" layoutY="37.0" mnemonicParsing="false" onAction="#webImportAction" prefHeight="26.0" prefWidth="138.0" text="WebPBN Import" textAlignment="CENTER" />
             <TextField fx:id="webPbnId" layoutX="6.0" layoutY="37.0" prefHeight="26.0" prefWidth="62.0" promptText="ID" />
             <Button alignment="CENTER" layoutX="6.0" layoutY="109.0" mnemonicParsing="false" onAction="#saveAsAction" prefHeight="26.0" prefWidth="203.0" text="Mentés másként..." />

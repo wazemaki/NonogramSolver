@@ -1,7 +1,7 @@
 package hu.unideb.inf.nonogramsolver.Model.Readers;
 
 import hu.unideb.inf.nonogramsolver.Model.PuzzleRawData;
-import hu.unideb.inf.nonogramsolver.Model.Solver.SolverException;
+import hu.unideb.inf.nonogramsolver.Model.SolverException;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import java.io.*;
@@ -10,7 +10,7 @@ import java.util.List;
 import org.xml.sax.SAXException;
 
 /**
- *
+ * XML formátumú fájl-olvasó.
  * @author wazemaki
  */
 public class XMLReader implements nonogramReader{
@@ -19,11 +19,23 @@ public class XMLReader implements nonogramReader{
     
     private final static String ERRMSG = "Érvénytelen nonogram XML fájl";
     
+    /**
+     * Konstruktor.
+     * @param file Az XML file-objektum.
+     */
     public XMLReader(File file){
         this.file = file;
         this.puzzle = new PuzzleRawData();
     }
     
+    /**
+     * Az XML file olvasása <code>{@link PuzzleRawData}</code> objektumba.
+     * @return <code>{@link PuzzleRawData}</code> objektum, mely tartalmazza a beolvasott rejtvényt.
+     * @throws ParserConfigurationException
+     * @throws IOException
+     * @throws SAXException
+     * @throws SolverException
+     */
     @Override
     public PuzzleRawData read() throws ParserConfigurationException, IOException, SAXException, SolverException {
         DocumentBuilderFactory dbFactory

@@ -1,9 +1,7 @@
 package hu.unideb.inf.nonogramsolver;
 
-import hu.unideb.inf.nonogramsolver.Controller.FXML.MainFXMLController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import static javafx.application.Application.launch;

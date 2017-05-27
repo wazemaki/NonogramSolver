@@ -11,7 +11,7 @@ import java.util.List;
 import javax.imageio.ImageIO;
 
 /**
- *
+ * Nonogramot generál.
  * @author wazemaki
  */
 public class NonGenerator {
@@ -23,31 +23,60 @@ public class NonGenerator {
     private int height, width;
     private int threshold;
     private boolean invertCol;
+    
+    /**
+     * Konstruktor.
+     */
+    public NonGenerator(){
+        this.drawData = new DrawingData();
+    }
 
+    /**
+     * A színek invertálását engedélyezi.
+     * @param invertCol Igaz{@code true}: a színek invertálása.
+     * Hamis{@code false}: az ereeti színek megtartása.
+     */
     public void setInvertCol(boolean invertCol) {
         this.invertCol = invertCol;
     }
 
+    /**
+     * A küszöbszintet állítja be.
+     * @param threshold A kívánt küszöbszint. (0 - 255)
+     */
     public void setThreshold(int threshold) {
         this.threshold = threshold;
     }
 
+    /**
+     * A generált rejtvény szélességét adja vissza.
+     * @return Szélesség
+     */
     public int getHeight() {
         return height;
     }
 
+    /**
+     * A generált rejtvény magasságát adja vissza.
+     * @return Magasság
+     */
     public int getWidth() {
         return width;
     }
     
-    public NonGenerator(){
-        this.drawData = new DrawingData();
-    }
-    
+    /**
+     * A generálandó képet állítja be.
+     * @param file A képfájl objektuma.
+     * @throws IOException
+     */
     public void setFile(File file) throws IOException{
         this.MasterImage = ImageIO.read(file);
     }
     
+    /**
+     * Átméretezett képet készít az eredeti képből.
+     * @param size Az átméretezett kép maximális mérete.
+     */
     public void makeResizedImageFromMaster(int size){
         if(this.MasterImage != null){
             int type = this.MasterImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : this.MasterImage.getType();
@@ -74,6 +103,9 @@ public class NonGenerator {
         }
     }
     
+    /**
+     * Az átméretezett képből fekete-fehér pixeleket generál.
+     */
     public void makeMonochromeImageFromResized(){
         
         Raster raster = this.ResizedImage.getRaster();
@@ -89,11 +121,19 @@ public class NonGenerator {
         }
     }
     
+    /**
+     * A kész, fekete-fehár négyzetrácsot adja vissza <code>{@link DrawingData}</code> objektum formájában.
+     * @return A kész <code>{@link DrawingData}</code> objektum
+     */
     public DrawingData getFinalImage(){
         this.drawData.setData(this.data, true, -1);
         return this.drawData;
     }
     
+    /**
+     * <code>{@link PuzzleRawData}</code> objektumot generál, ez a kész kép.
+     * @return A kész <code>{@link PuzzleRawData}</code> objektum
+     */
     public PuzzleRawData generateRawData(){
         PuzzleRawData rData = new PuzzleRawData();
         List<Integer> actualCol;
@@ -143,6 +183,4 @@ public class NonGenerator {
         }
         return rData;
     }
-    
-    
 }

@@ -1,4 +1,4 @@
-package hu.unideb.inf.nonogramsolver.Controller.FXML;
+package hu.unideb.inf.nonogramsolver.Controller.GUI;
 
 import hu.unideb.inf.nonogramsolver.Model.NonGenerator;
 import hu.unideb.inf.nonogramsolver.Model.Drawing.PuzzleDrawer;
@@ -12,20 +12,24 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 /**
  * FXML Controller class
  *
  * @author wazemaki
  */
-public class GeneratorFXMLController implements Initializable{
+public abstract class GeneratorFXMLController implements Initializable{
     private NonGenerator generator;
     private PuzzleDrawer drawer;
-    private MainFXMLController mainController;
     
     @FXML
     public Canvas out;
+    @FXML
+    public Label sizeLabel;
     @FXML
     public CheckBox invertColors;
     @FXML
@@ -40,10 +44,19 @@ public class GeneratorFXMLController implements Initializable{
         this.setListeners();
     }
     
+    @FXML
+    private void generateRawDataAction(){
+        PuzzleRawData rawData = this.generator.generateRawData();
+        this.generateAction(rawData);
+        Stage stage = (Stage) this.out.getScene().getWindow();
+        stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
+    }
+    
     private void setListeners(){
         this.thresholdSlider.valueProperty().addListener(
             (ObservableValue<? extends Number> o, Number oldValue, Number newValue) -> {
-                this.makeMonochromeAndRedraw(newValue.intValue());
+                this.makeMonochrome(newValue.intValue());
+                this.redraw();
         });
         
         this.sizeSlider.valueProperty().addListener(
@@ -51,14 +64,21 @@ public class GeneratorFXMLController implements Initializable{
                 int size = newValue.intValue();
                 this.generator.makeResizedImageFromMaster(size);
                 this.setDrawerSizes();
-                this.makeMonochromeAndRedraw(null);
+                this.makeMonochrome(null);
+                this.redraw();
+                this.setSizeLabelText();
         });
         
         this.invertColors.selectedProperty().addListener(
             (ObservableValue<? extends Boolean> o, Boolean oldValue, Boolean newValue) -> {
                 this.generator.setInvertCol(newValue);
-                this.makeMonochromeAndRedraw(null);
+                this.makeMonochrome(null);
+                this.redraw();
         });
+    }
+    
+    public void setFile(File file) throws IOException {
+        this.generator.setFile(file);
     }
     
     private void setDrawerSizes(){
@@ -69,30 +89,29 @@ public class GeneratorFXMLController implements Initializable{
                 (int)this.out.getHeight());
     }
     
-    public void setFile(File file) throws IOException {
-        this.generator.setFile(file);
-    }
-    
     public void initialShow(){
         this.generator.makeResizedImageFromMaster((int)this.sizeSlider.getValue());
         this.setDrawerSizes();
-        this.makeMonochromeAndRedraw((int)this.thresholdSlider.getValue());
+        this.makeMonochrome((int)this.thresholdSlider.getValue());
+        this.setSizeLabelText();
+        this.redraw();
     }
     
-    private void makeMonochromeAndRedraw(Integer threshold){
+    private void makeMonochrome(Integer threshold){
         if(threshold != null){
             this.generator.setThreshold(threshold);
         }
         this.generator.makeMonochromeImageFromResized();
+    }
+    
+    private void redraw(){
         this.drawer.redraw(this.generator.getFinalImage());
     }
     
-    public void setMainController(MainFXMLController controller) {
-        this.mainController = controller;
+    private void setSizeLabelText(){
+        this.sizeLabel.setText(this.generator.getWidth() + " x " + this.generator.getHeight());
     }
     
-    public void generateRawData(){
-        PuzzleRawData rawData = this.generator.generateRawData();
-        this.mainController.setGeneratedRawData(rawData);
-    }
+    public abstract void generateAction(PuzzleRawData rawData);
+    
 }

@@ -1,7 +1,7 @@
 package hu.unideb.inf.nonogramsolver.Model.Solver;
 
 /**
- * Egy sort reprezentál
+ * Egy sort reprezentál. A <code>{@link Solver}</code> objektum segéd-sorokként használja a fejtéshez.
  *
  * @author wazemaki
  */
@@ -29,9 +29,6 @@ public class Row {
             this.data[i] = other.get(i);
         }
     }
-//    public static int EMPTY = 0;
-//    public static int WHITE = 1;
-//    public static int BLACK = 2;
     
     private int[] data;
     private int length;
@@ -118,7 +115,7 @@ public class Row {
     }
             
     /**
-     * A sor aktuális elem-indexét állítja
+     * A sor aktuális indexét állítja
      *
      * @param index A kívánt index
      * @return 

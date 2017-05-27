@@ -1,24 +1,34 @@
 package hu.unideb.inf.nonogramsolver.Model.Readers;
 
 import hu.unideb.inf.nonogramsolver.Model.PuzzleRawData;
-import hu.unideb.inf.nonogramsolver.Model.Solver.SolverException;
+import hu.unideb.inf.nonogramsolver.Model.SolverException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * <code>{@link BufferedReader}</code> objektum-olvasó.
  * @author wazemaki
  */
 public class StreamReader implements nonogramReader{
     
     private final BufferedReader bReader;
     
+    /**
+     * Konstruktor
+     * @param br <code>{@link BufferedReader}</code> objektum, ahonnan olvas.
+     */
     public StreamReader(BufferedReader br){
         this.bReader = br;
     }
     
+    /**
+     * A stream file olvasása <code>{@link PuzzleRawData}</code> objektumba.
+     * @return <code>{@link PuzzleRawData}</code> objektum, mely tartalmazza a beolvasott rejtvényt.
+     * @throws IOException
+     * @throws SolverException
+     */
     @Override
     public PuzzleRawData read() throws IOException, SolverException {
         PuzzleRawData puzzle = new PuzzleRawData();
@@ -30,15 +40,14 @@ public class StreamReader implements nonogramReader{
                 continue;
             }
             if(line.equals("rows")){
-                part = 1; //sorok kovetkeznek..
+                part = 1;
                 continue;
             }
             else if(line.equals("columns")){
-                part = 2; //oszlopok kovetkeznek
+                part = 2;
                 continue;
             }
             if(part != 0){
-                
                 List<Integer> numbers = new ArrayList<>();
                 try{
                     for (String s : line.split(",")){

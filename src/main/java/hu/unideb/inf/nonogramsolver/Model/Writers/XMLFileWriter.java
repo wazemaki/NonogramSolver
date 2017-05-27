@@ -17,17 +17,28 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- *
+ * <code>{@link PuzzleRawData}</code> objektumot ment XML fájlba.
  * @author wazemaki
  */
 public class XMLFileWriter {
 
     private final PuzzleRawData rawData;
 
+    /**
+     * Konstruktor.
+     * @param data Elmentendő <code>{@link PuzzleRawData}</code> objektum
+     */
     public XMLFileWriter(PuzzleRawData data) {
         this.rawData = data;
     }
 
+    /**
+     * Fájl összeállítása és írása.
+     * @param file A mentendő <code>{@link File}</code> objektum.
+     * @throws IOException
+     * @throws TransformerException
+     * @throws ParserConfigurationException
+     */
     public void write(File file) throws IOException, TransformerException, ParserConfigurationException {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();

@@ -1,6 +1,7 @@
 package hu.unideb.inf.nonogramsolver.Model.Solver;
 
 import hu.unideb.inf.nonogramsolver.Controller.SolverController;
+import hu.unideb.inf.nonogramsolver.Model.SolverEvent;
 import java.util.Arrays;
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class Solver implements Runnable{
     /**
      * Back-up objektum, amely tippelés esetén tárolja a fejtő egy korábi állapotát.
      */
-    protected PuzzleBackup backUp;
+    public PuzzleBackup backUp;
     
     /**
      * Aktuális tippelés koordinátái.
@@ -82,7 +83,7 @@ public class Solver implements Runnable{
     /**
      * A prioritas szamolasahoz szukseges tömb.
     */
-    private final int[] colDif, rowDif;
+    public final int[] colDif, rowDif;
     /**
      * A prioritas szamolasahoz szukseges tömb.
     */
@@ -129,15 +130,22 @@ public class Solver implements Runnable{
         this.changedCols = new boolean[this.width];
         this.changedRows = new boolean[this.height];
         this.backUp = null;
+        this.clearGrid();
         
+        for(int i = 0; i < this.height; i++){
+            this.changedRows[i] = true;
+        }
+    }
+    
+    /**
+     * A négyzetrácsot feltölti üres négyzetekkel.
+     */
+    public void clearGrid(){
         for(int i = 0; i < this.width; i++){
             this.changedCols[i] = true;
             for(int j = 0; j < this.height; j++){
                 this.set(j, i, -1);
             }
-        }
-        for(int i = 0; i < this.height; i++){
-            this.changedRows[i] = true;
         }
     }
        
@@ -173,6 +181,14 @@ public class Solver implements Runnable{
     }
     
     /**
+     * A fejtő aktuális sor/oszlop állapotát állítja be.
+     * @param isRow A kívánt SOR/OSZLOP állapot.
+     */
+    public void setIsRow(boolean isRow){
+        this.isRow = isRow;
+    }
+    
+    /**
      * Egy mező színét állítja be.
      * @param row A mező sorának indexe
      * @param col A mező oszlopának indexe
@@ -202,19 +218,20 @@ public class Solver implements Runnable{
      */
     public Line getLine(int index, int color, int outColor){
         int len = (this.isRow) ? this.width : this.height;
-        Line row = new Line(len);
+        Line line = new Line(len);
+        int o_color = outColor;
         for(int i = 0; i < len; i++){
             int orig = (this.isRow) ? this.get(index,i) : this.get(i,index);
             if(outColor == -2){
-                outColor = orig; //ha nem hataroztunk meg kimeneti szint, akkor siman mindent csak masolunk...
-            } 
+                o_color = orig; //ha nem hataroztunk meg kimeneti szint, akkor siman mindent csak masolunk...
+            }
             if(color == -2 || color == orig){  //ha meghataroztunk szurest, akkor csak az azonos szinueket nyomjuk
-                row.set(i,1,outColor);
+                line.set(i, 1, o_color);
             } else {
-                row.set(i,1,-1);
+                line.set(i,1,-1);
             }
         }
-        return row;
+        return line;
     }
 
     /**
@@ -228,7 +245,7 @@ public class Solver implements Runnable{
         for(int i = 0; i < len; i++){
             if(row.get(i) > -1){
                 if(this.isRow) {
-                    if(this.set(index,i,row.get(i))){
+                    if(this.set(index, i, row.get(i))){
                         this.changedCols[i] = true;
                     }
                 } else {
@@ -429,13 +446,7 @@ public class Solver implements Runnable{
         }
         
         int dif = len - (sum + pcs) + 1;
-        if(this.isRow){
-            this.rowDif[index] = dif;
-            this.rowAverage[index] = sum / pcs;
-        } else {
-            this.colDif[index] = dif;
-            this.colAverage[index] = sum / pcs;
-        }
+        
         if(dif >= 0){
             Line begin = new Line(len);
             Line end = new Line(len);
@@ -451,7 +462,7 @@ public class Solver implements Runnable{
                 begin.set(0,-1,-1);
                 end.set(0,-1,-1);
             }
-            this.setLine(index,slave);
+            this.setLine(index, slave);
         } else {
             this.isEnd = true;
         }
@@ -460,9 +471,8 @@ public class Solver implements Runnable{
     /**
      * A fejtő <code>{@link PuzzleBackup}</code> példányát másolja vissza. (visszaállítja)
      */
-    private void backUpCopy(){
+    public void backUpCopy(){
         this.error = false;
-        this.backUp = this.backUp.back;
         this.colTip = this.backUp.colTip;
         this.rowTip = this.backUp.rowTip;
         
@@ -473,6 +483,7 @@ public class Solver implements Runnable{
         for(int i = 0; i < height; i++){
             this.changedRows[i] = false;
         }
+        this.backUp = this.backUp.back;
     }
     
     /**
@@ -540,22 +551,86 @@ public class Solver implements Runnable{
         }
         return false;
     }
+    
+    /**
+     * A fix oszlopok és sorok meghatarozása, amiből kiindulhatunk.
+     */
+    public void fixAll(){
+        this.isRow = true;
+        for(int i = 0; i < this.height; i++) {
+            this.fix(i);
+        }
+        this.isRow = false;
+        for(int i = 0; i < this.width; i++) {
+            this.fix(i);
+        }
+    }
+    
+    /**
+     * A prioritás számolásához szükséges tömböket tölti fel.
+     */
+    public void setUpSlaveArrays(){
+        for(int index = 0; index < this.width; index++){
+            int sum = 0;
+            List<Integer> line = this.puzzleCols.get(index);
+            int pcs = line.size();
+            for(int i : line){
+                sum += i;
+            }
+            this.colDif[index] = this.height - (sum + pcs) + 1;
+            this.colAverage[index] = sum / pcs;
+        }
+        for(int index = 0; index < this.height; index++){
+            int sum = 0;
+            List<Integer> line = this.puzzleRows.get(index);
+            int pcs = line.size();
+            for(int i : line){
+                sum += i;
+            }
+            this.rowDif[index] = this.width - (sum + pcs) + 1;
+            this.rowAverage[index] = sum / pcs;
+        }
+    }
+    
+    /**
+     * Egy sor megoldását keresi az aktuális mezők alapján.
+     * @param index A sor indexe
+     */
+    public void findBlocksInRow(int index) {
+        this.slaveRow.setIndex(0);
+        this.fixBrow.setByRow(this.getLine(index, -1, 1), false);
+        this.fixWrow.setByRow(this.getLine(index, -1, 0), false);
+        if (this.potentialRow(index, this.rowDif[index], 0)) {
+            this.setLine(index, this.fixBrow);
+            this.setLine(index, this.fixWrow);
+        }
+        this.changedRows[index] = false;
+    }
+    
+    /**
+     * Egy oszlop megoldását keresi az aktuális mezők alapján.
+     * @param index Az oszlop indexe
+     */
+    public void findBlocksInCol(int index) {
+        this.slaveCol.setIndex(0);
+        this.fixBcol.setByRow(this.getLine(index, -1, 1), false);
+        this.fixWcol.setByRow(this.getLine(index, -1, 0), false);
+        if (this.potentialCol(index, this.colDif[index], 0)) {
+            this.setLine(index, this.fixBcol);
+            this.setLine(index, this.fixWcol);
+        }
+        this.changedCols[index] = false;
+    }
         
     /**
      * Elindítja a fejtést.
      */
     @Override
     public void run(){
-        this.controller.callOnStart("");
+        this.callEvent(SolverEvent.EVENT_START, "");
         int index = 0;
-        this.isRow = true;
-        for(int i = 0; i < this.height; i++) { //a fix oszlopok meghatarozasa, amibol kiindulhatunk
-            fix(i);
-        }
-        this.isRow = false;
-        for(int i = 0; i < this.width; i++) { //a fix oszlopok meghatarozasa, amibol kiindulhatunk
-            fix(i);
-        }
+        this.setUpSlaveArrays();
+        this.fixAll();
         
         while(!this.isEnd){
             this.isEnd = true;
@@ -563,41 +638,29 @@ public class Solver implements Runnable{
                 index = this.selectByPrior(true, false);
             } else {
                 if((this.isRow && ++index == this.height) || (!this.isRow && ++index == this.width)){
-                    index = 0;
                     this.isRow = !this.isRow;
+                    index = 0;
                 }
             }
             this.active = index;
             if(index > -1){
                 this.error = true;
                 if(this.isRow){
-                    this.slaveRow.setIndex(0);
-                    this.fixBrow.setByRow( this.getLine(index,-1,1), false );
-                    this.fixWrow.setByRow( this.getLine(index,-1,0), false );
-                    if( this.potentialRow(index,this.rowDif[index],0) ){
-                        this.setLine(index,this.fixBrow);
-                        this.setLine(index,this.fixWrow);
-                    }
-                    this.changedRows[index] = false;
+                    this.findBlocksInRow(index);
                 } else {
-                    this.slaveCol.setIndex(0);
-                    this.fixBcol.setByRow( this.getLine(index,-1,1), false );
-                    this.fixWcol.setByRow( this.getLine(index,-1,0), false );
-                    if( this.potentialCol(index,this.colDif[index],0) ){
-                        this.setLine(index,this.fixBcol);
-                        this.setLine(index,this.fixWcol);
-                    }
-                    this.changedCols[index] = false;
+                    this.findBlocksInCol(index);
                 }
                 this.isEnd = false;
             }
+            
             if(this.isStopped){
-                this.controller.callOnStopped("");
+                this.callEvent(SolverEvent.EVENT_STOP, "");
                 break;
             }
+            
             if(this.error){ //hiba, nem lehet megoldani... ha van visszalepes, azzal folytatni, ha nincs vege...
                 if(!this.backUp()){
-                    this.controller.callOnError("Nem lehet megfejteni...");
+                    this.callEvent(SolverEvent.EVENT_ERROR, "Nem lehet megfejteni...");
                     break;
                 }
             }
@@ -609,19 +672,49 @@ public class Solver implements Runnable{
                     this.changedRows[this.rowTip] = true;
                     this.isEnd = false;
                 } else {
-                    this.controller.callOnError("Próbálkozások nélkül nem lehet megfejteni");
+                    this.callEvent(SolverEvent.EVENT_ERROR, "Próbálkozások nélkül nem lehet megfejteni");
                     break;
                 }
             }
             
-            this.controller.callOnRedraw();
+            this.callEvent(SolverEvent.EVENT_REDRAW, "");
             
         }
         if(!this.isStopped && this.isComplete()){
-            this.controller.callOnComplete("");
+            this.callEvent(SolverEvent.EVENT_COMPLETE, "");
         }
-        this.controller.callOnRedraw();
-        this.controller.callOnEnd("");
+        this.callEvent(SolverEvent.EVENT_REDRAW, "");
+        this.callEvent(SolverEvent.EVENT_END, "");
+    }
+    
+    /**
+     * Egy eseményt hív meg.
+     * @param evType Az esemény típusa
+     * @param data Az eseménynek átadott adat
+     */
+    public void callEvent(byte evType,String data){
+        if(this.controller != null){
+            switch(evType){
+                case SolverEvent.EVENT_COMPLETE:
+                    this.controller.callOnComplete(data);
+                    break;
+                case SolverEvent.EVENT_END:
+                    this.controller.callOnEnd(data);
+                    break;
+                case SolverEvent.EVENT_ERROR:
+                    this.controller.callOnError(data);
+                    break;
+                case SolverEvent.EVENT_REDRAW:
+                    this.controller.callOnRedraw();
+                    break;
+                case SolverEvent.EVENT_START:
+                    this.controller.callOnStart(data);
+                    break;
+                case SolverEvent.EVENT_STOP:
+                    this.controller.callOnStopped(data);
+                    break;
+            }
+        }
     }
     
     /**
@@ -647,7 +740,11 @@ public class Solver implements Runnable{
      * @return A kívánt sor/oszlop String-je.
      */
     public String print(int index, String text){
-        text += ": ";
+        if(text != null){
+            text += ": ";
+        } else {
+            text = "";
+        }
         int len = (this.isRow)?this.width:this.height;
         for(int i=0; i < len; i++){
             int dt = (this.isRow)?this.grid[i][index]:this.grid[index][i];

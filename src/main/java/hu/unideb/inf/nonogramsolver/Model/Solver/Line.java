@@ -22,7 +22,6 @@ public class Line {
     
     /**
      * Konstruktor.
-     *
      * @param length A sor hosszát határozza meg
     */
     public Line(int length) {
@@ -33,7 +32,6 @@ public class Line {
     }
     /**
      * Konstruktor.
-     *
      * @param other Sor, amit a konstruktor lemásol
     */
     public Line(Line other){
@@ -45,8 +43,15 @@ public class Line {
     }
     
     /**
-     * Konstruktor.
-     *
+     * A sor objektum mezőit tartalmazó tömböt adja vissza.
+     * @return A mezőket tartalmazó tömb.
+    */
+    public int[] getData(){
+        return this.data;
+    }
+
+    /**
+     * Egy másik sor adatait másolja.
      * @param other Sor, amit másolunk
      * @param length Ha igaz, egy az egyben lemásoljuk a sort. Ha hamis, az eredeti sor hossza megmarad.
      * @return A {@code Line} objektum.
@@ -61,6 +66,24 @@ public class Line {
             for(int i = 0; i < this.length; i++){
                 this.data[i] = other.get(i);
             }
+        }
+        return this;
+    }
+    
+    /**
+     * Egy tömb szerint állítja be az adatokat.
+     * @param array Tömb, amit másolunk
+     * @param length Ha igaz, egy az egyben lemásoljuk a sort. Ha hamis, az eredeti sor hossza megmarad.
+     * @return A {@code Line} objektum.
+    */
+    public Line setByArray(int[] array, Boolean length){
+        if(length) {
+            this.length = array.length;
+            this.data = new int[this.length];
+        }
+        this.index = 0;
+        for(int i = 0; i < this.length; i++){
+            this.data[i] = array[i];
         }
         return this;
     }
@@ -104,7 +127,6 @@ public class Line {
     public Line set(int i,int l, int color){
         if(i == -1) i = this.index;
         if(l == -1) l = this.length;
-//        if(color == null) color = 1;
         
         for(int j = i; (j < i + l) && (j < this.length); j++){
             this.data[j] = color;
@@ -203,23 +225,28 @@ public class Line {
     /**
      * Szöveggé alakít, majd kiír.
      * (fejlesztői, hibakeresési célokra)
-     * @param txt A sztring elején található szöveg
+     * @param text A sztring elején található szöveg
+     * @return A kívánt sor/oszlop String-je.
     */
-    public void print(String txt){
-        txt += ": ";
+    public String print(String text){
+        if(text != null){
+            text += ": ";
+        } else {
+            text = "";
+        }
         for(int i=0; i < this.length; i++){
             switch (this.data[i]) {
             case -1:
-                txt += "-";
+                text += "-";
                 break;
             case 0:
-                txt += "O";
+                text += "O";
                 break;
             case 1:
-                txt += "I";
+                text += "I";
                 break;
             }
         }
-        System.out.println(txt);
+        return text;
     }
 }

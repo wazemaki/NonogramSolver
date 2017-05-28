@@ -9,10 +9,13 @@ import java.util.List;
  * @author wazemaki
  */
 public class Solver implements Runnable{
+    /**
+     * A fejtő kontrollere.
+     */
     private final SolverController controller;
     
     /**
-     * A rejtvény méretei
+     * A rejtvény méretei.
      */
     protected final int width, height;
 
@@ -21,12 +24,21 @@ public class Solver implements Runnable{
      */
     protected boolean isEnd;
     
+    /**
+     * Az aktív sor/oszlop indexe.
+     */
     private int active;
     
-    private final Row slaveRow;
-    private final Row fixBrow, fixWrow;
-    private final Row slaveCol;
-    private final Row fixBcol, fixWcol;
+    /**
+     * A fejtéshez felhasznált segéd-sorok, oszlopok.
+     */
+    private final Line slaveRow,
+            fixBrow, fixWrow,
+            fixBcol, fixWcol,
+            slaveCol;
+    /**
+     * A sorokban történt változtatásokat tartalmazza.
+     */
     private final boolean[] changedCols, changedRows;
 
     /**
@@ -35,16 +47,31 @@ public class Solver implements Runnable{
     protected PuzzleBackup backUp;
     
     /**
-     * Aktuális tippelés koordinátái
+     * Aktuális tippelés koordinátái.
      */
     protected int colTip, rowTip;
     
+    /**
+     * Nyers rejtvény-adatokat tárol.
+     */
     private final List<List<Integer> > puzzleCols, puzzleRows;
     
+    /**
+     * A fejtő aktuális SOR / OSZLOP állapotát tárolja.
+     */
     private boolean isRow;
+    /**
+     * Hiba flag.
+     */
     private boolean error;
-    private final boolean enableBackup;
-    private final boolean enablePrior;
+    /**
+     * Fejtő beállításokat tároló flag-ek.
+     */
+    private final boolean enableBackup,
+            enablePrior;
+    /**
+     * Megállítást jelző flag.
+     */
     private boolean isStopped = false;
     
     /**
@@ -53,14 +80,17 @@ public class Solver implements Runnable{
     protected int[][] grid;
     
     /**
-     * A prioritas szamolasahoz szuksegesek!
+     * A prioritas szamolasahoz szukseges tömb.
     */
     private final int[] colDif, rowDif;
+    /**
+     * A prioritas szamolasahoz szukseges tömb.
+    */
     private final float[] colAverage, rowAverage;
     // --------------------------------
     
     /**
-     * A fejtő Konstruktora
+     * A fejtő Konstruktora.
      * @param cols A rejtvényben szereplő oszlopok
      * @param rows A rejtvényben szereplő sorok
      * @param controller Kontroller, melynek segítségével kezelhetjük az eseményeket
@@ -83,13 +113,13 @@ public class Solver implements Runnable{
         
         this.grid = new int[this.width][this.height];
         
-        this.slaveCol = new Row(this.height);
-        this.slaveRow = new Row(this.width);
+        this.slaveCol = new Line(this.height);
+        this.slaveRow = new Line(this.width);
         
-        this.fixBcol = new Row(this.height);
-        this.fixBrow = new Row(this.width);
-        this.fixWcol = new Row(this.height);
-        this.fixWrow = new Row(this.width);
+        this.fixBcol = new Line(this.height);
+        this.fixBrow = new Line(this.width);
+        this.fixWcol = new Line(this.height);
+        this.fixWrow = new Line(this.width);
         
         this.rowAverage = new float[this.height];
         this.colAverage = new float[this.width];
@@ -112,7 +142,7 @@ public class Solver implements Runnable{
     }
        
     /**
-     * Egy mező aktuális színét adja vissza
+     * Egy mező aktuális színét adja vissza.
      * @param row A mező sorának indexe
      * @param col A mező oszlopának indexe
      * @return A mező színe (-1, ha még nincs megfejtve, vagy az indexek valamelyike hibás)
@@ -126,8 +156,8 @@ public class Solver implements Runnable{
     }
        
     /**
-     * A négyzetrácsot adja vissza
-     * @return A rejtvény kétdimenziós rácsa
+     * A kétdimenziós négyzetrácsot adja vissza.
+     * @return A rács
      */
     public int[][] getGrid(){
         return this.grid;
@@ -135,14 +165,22 @@ public class Solver implements Runnable{
     
     /**
      * A fejtő aktuális sor/oszlop állapotát adja.
-     * @return Igaz(true), ha az aktuális állapot SOR.
-     *  Hamis(false), ha az aktuális állapot OSZLOP.
+     * @return Igaz({@code true}), ha az aktuális állapot SOR.
+     *  Hamis({@code false}), ha az aktuális állapot OSZLOP.
      */
     public boolean getIsRow(){
         return this.isRow;
     }
     
-    private boolean set(int row, int col, int color){ //egyetlen kockat allit, visszatér igazzal, ha változott a kocka
+    /**
+     * Egy mező színét állítja be.
+     * @param row A mező sorának indexe
+     * @param col A mező oszlopának indexe
+     * @param color A mező oszlopának indexe
+     * @return Igaz({@code true}), ha a mező színe változott.
+     * Hamis({@code false}), ha a mező színe eredeti maradt.
+     */
+    public boolean set(int row, int col, int color){
         int orig = -1;
         if(row < this.height && col < this.width){
             orig = this.grid[col][row];
@@ -151,9 +189,20 @@ public class Solver implements Runnable{
         return (orig != color);
     }
     
-    private Row getLine(int index, int color, int outColor){ //visszaad egy sort vagy oszlopot, egySor formaban
+    /**
+     * Egy sort/oszlopot ad vissza <code>{@link Line}</code> objektum formájában a négyízetrácsból.
+     * Az <code>{@link Solver#isRow}</code> függvényében az adott indexben lévő sort, vagy oszlopot adja
+     * a paraméterben megadott feltételeknek megfelelően.
+     * @param index A sor/oszlop indexe
+     * @param color Színek szűrése: {@code (-2|-1|0|1)} Az itt megadott színt figyeli az eredeti sorban.
+     * -2 esetén az összes színt figyelembe veszi.
+     * @param outColor Kimeneti szín: {@code (-2|-1|0|1)}. -2 esetén az eredeti színt másolja,
+     * egyébként az itt megadott színt írja a kimeneti objektumba.
+     * @return <code>{@link Line}</code> objektum, amelyet a függvény elkészít.
+     */
+    public Line getLine(int index, int color, int outColor){
         int len = (this.isRow) ? this.width : this.height;
-        Row row = new Row(len);
+        Line row = new Line(len);
         for(int i = 0; i < len; i++){
             int orig = (this.isRow) ? this.get(index,i) : this.get(i,index);
             if(outColor == -2){
@@ -168,7 +217,13 @@ public class Solver implements Runnable{
         return row;
     }
 
-    private void setLine(int index, Row row){ // egesz sort/oszlopot allit
+    /**
+     * Egy sort/oszlopot állít be a négyzetrácsban egy <code>{@link Line}</code> objektumból.
+     * Az <code>{@link Solver#isRow}</code> függvényében az adott indexben lévő sort, vagy oszlopot állítja.
+     * @param index A sor/oszlop indexe
+     * @param row <code>{@link Line}</code> objektum, amelyet beállít.
+     */
+    public void setLine(int index, Line row){
         int len = (this.isRow) ? this.width : this.height;
         for(int i = 0; i < len; i++){
             if(row.get(i) > -1){
@@ -185,7 +240,16 @@ public class Solver implements Runnable{
         }
     }
     
-    private int count(int index, int color, boolean inv){ //megszamolja, az adott sorban/oszlopban mennyi "szin" mező van
+    /**
+     * Egy sor/oszlop mezőit számolja meg a paraméterekben megadott feltételeknek megfelelően.
+     * Az <code>{@link Solver#isRow}</code> függvényében az adott indexben lévő sort, vagy oszlopot számolja.
+     * @param index A sor/oszlop indexe
+     * @param color A szín, amelyet az adott sorban/oszlopban számol.
+     * @param inv Igaz({@code true}): A {@code color} paraméterben megadott színen kívül számol.
+     * Hamis({@code false}): A {@code color} paraméterben megadott színű mazőket számolja.
+     * @return A kívánt mezők száma a sorban.
+     */ 
+    public int count(int index, int color, boolean inv){
         int sum = 0;
         int len = (this.isRow)?this.width:this.height;
         for(int i = 0; i < len; i++){
@@ -206,13 +270,22 @@ public class Solver implements Runnable{
         return sum;
     }
     
-    private boolean compare(int index, Row row, int len){ //megallapitja, hogy a megadott sorreszlet egy lehetseges megoldas-e
-        if(len == 0) len = row.getLength();
+    /**
+     * Megállapitja, hogy a megadott <code>{@link Line}</code> objektum lehetséges megoldás-e.
+     * Az <code>{@link Solver#isRow}</code> függvényében az adott indexben lévő sort, vagy oszlopot vizsgálja.
+     * @param index A sor/oszlop indexe
+     * @param line <code>{@link Line}</code> objektum, amelyet hasonlít a kívánt sorhoz/oszlophoz.
+     * @param len A hossz, amelyet vizsgál. {@code 0} esetén az egész sort vizsgálja.
+     * @return Igaz({@code true}), ha a sor/oszlop lehetséges megoldás.
+     * Hamis({@code false}), ha nem megoldás.
+     */
+    public boolean compare(int index, Line line, int len){
+        if(len == 0) len = line.getLength();
         for(int i = 0; i < len; i++){            
-            if(this.isRow && this.grid[i][index] > -1 && this.grid[i][index] != row.get(i)){
+            if(this.isRow && this.grid[i][index] > -1 && this.grid[i][index] != line.get(i)){
                 return false;
             }
-            if(!this.isRow && this.grid[index][i] > -1 && this.grid[index][i] != row.get(i)){
+            if(!this.isRow && this.grid[index][i] > -1 && this.grid[index][i] != line.get(i)){
                 
                 return false;
             }
@@ -220,7 +293,14 @@ public class Solver implements Runnable{
         return true;
     }
     
-    private int selectByPrior(boolean onlyChanged, boolean emptyRows){
+    /**
+     * Kiválasztja prioritás szerint a legmegfelelőbb sort/oszlopot.
+     * Az <code>{@link Solver#isRow}</code> flaget is ez a függvény állítja be.
+     * @param onlyChanged Ha igaz({@code true}), csak a legutóbbi vizsgálat óta megváltoztatott sorokat/oszlopokat veszi figyelembe.
+     * @param emptyRows Ha igaz({@code true}), az üres sorokat/oszlopokat is figyelembe veszi.
+     * @return A kiválasztott sor/oszlop indexe.
+     */
+    public int selectByPrior(boolean onlyChanged, boolean emptyRows){
         float maxprior = -2;
         float prior;
         int index = -1;
@@ -262,8 +342,18 @@ public class Solver implements Runnable{
         return index;
     }
     
-    private boolean potentialRow(int row, int dif, int recur){
-        int slaveRowIndex = this.slaveRow.getIndex(); //azert kell, hogy minden ciklusmagban ugyanonnan kezdje feltolteni
+    /**
+     * A <code>{@link Solver#fixBrow}</code>(fekete mezők) és <code>{@link Solver#fixWrow}</code>(fehér mezők)
+     * <code>{@link Line}</code>-objektumokat állítja be. A kívánt sorban azokat a mezőket tárolja az objektumokban,
+     * amelyek az összes illeszkedő, lehetséges sor-variációban előfordulnak.
+     * @param row A vizsgálni kívánt sor indexe.
+     * @param dif A rekurzió megvalósításához szükséges.
+     * @param recur A rekurzió megvalósításához szükséges.
+     * @return Igaz({@code true}), ha a segéd-objektumok valamelyike tartalmaz megfejtett mezőt.
+     * Hamis({@code false}), ha a segéd-objektumok üresek. (Nem tartalmaznak megfejtett mezőt.)
+     */
+    public boolean potentialRow(int row, int dif, int recur){
+        int slaveRowIndex = this.slaveRow.getIndex();
         int whites = (recur == 0) ? 0 : 1;
         int numBlocks = this.puzzleRows.get(row).size();
         boolean ok = true;
@@ -280,7 +370,7 @@ public class Solver implements Runnable{
                 this.error = false;
                 this.fixBrow.logic_AND(this.slaveRow,1);
                 this.fixWrow.logic_AND(this.slaveRow,0);
-                if(this.fixBrow.getDeficit(false) == 0 && this.fixWrow.getDeficit(false) == 0){
+                if(this.fixBrow.getFilledCnt() == 0 && this.fixWrow.getFilledCnt() == 0){
                     return false;
                 }
             }
@@ -288,8 +378,18 @@ public class Solver implements Runnable{
         return ok;
     }
     
-    private boolean potentialCol(int col, int dif, int recur){
-        int slaveColIndex = this.slaveCol.getIndex(); //azert kell, hogy minden ciklusmagban ugyanonnan kezdje feltolteni
+    /**
+     * A <code>{@link Solver#fixBcol}</code>(fekete mezők) és <code>{@link Solver#fixWcol}</code>(fehér mezők)
+     * <code>{@link Line}</code>-objektumokat állítja be. A kívánt oszlopban azokat a mezőket tárolja az objektumokban,
+     * amelyek az összes illeszkedő, lehetséges oszlop-variációban előfordulnak.
+     * @param col A vizsgálni kívánt oszlop indexe.
+     * @param dif A rekurzió megvalósításához szükséges.
+     * @param recur A rekurzió megvalósításához szükséges.
+     * @return Igaz({@code true}), ha a segéd-objektumok valamelyike tartalmaz megfejtett mezőt.
+     * Hamis({@code false}), ha a segéd-objektumok üresek. (Nem tartalmaznak megfejtett mezőt.)
+     */
+    public boolean potentialCol(int col, int dif, int recur){
+        int slaveColIndex = this.slaveCol.getIndex();
         int whites = (recur == 0) ? 0 : 1;
         int numBlocks = this.puzzleCols.get(col).size();
         boolean ok = true;
@@ -305,7 +405,7 @@ public class Solver implements Runnable{
                 this.error = false;
                 this.fixBcol.logic_AND(this.slaveCol,1);
                 this.fixWcol.logic_AND(this.slaveCol,0);
-                if(this.fixBcol.getDeficit(false) == 0 && this.fixWcol.getDeficit(false) == 0){
+                if(this.fixBcol.getFilledCnt() == 0 && this.fixWcol.getFilledCnt() == 0){
                     return false;
                 }
             }
@@ -313,7 +413,12 @@ public class Solver implements Runnable{
         return ok;
     }
     
-    private void fix(int index){ // Meghatarozza azokat a mezoket, amik biztosan feketek, es kitolti a 'kulonsegek' es 'atlag' tombot.
+    /**
+     * Meghatározza azokat a mezőket, amelyek biztosan feketék.
+     * Az <code>{@link Solver#isRow}</code> függvényében az adott indexben lévő sort, vagy oszlopot vizsgálja.
+     * @param index A sor/oszlop indexe
+     */
+    public void fix(int index){
         int sum = 0;
         List<Integer> line = (this.isRow) ? this.puzzleRows.get(index) : this.puzzleCols.get(index);
         int pcs = line.size();
@@ -332,9 +437,9 @@ public class Solver implements Runnable{
             this.colAverage[index] = sum / pcs;
         }
         if(dif >= 0){
-            Row begin = new Row(len);
-            Row end = new Row(len);
-            Row slave = new Row(len);
+            Line begin = new Line(len);
+            Line end = new Line(len);
+            Line slave = new Line(len);
             end.setIndex(dif);
             for(int i : line){
                 begin.append(i, 1)
@@ -352,15 +457,17 @@ public class Solver implements Runnable{
         }
     }
     
-    private void backUpCopy(PuzzleBackup backup){
-        this.isEnd = backup.isEnd;
+    /**
+     * A fejtő <code>{@link PuzzleBackup}</code> példányát másolja vissza. (visszaállítja)
+     */
+    private void backUpCopy(){
         this.error = false;
-        this.backUp = backup.back;
-        this.colTip = backup.colTip;
-        this.rowTip = backup.rowTip;
+        this.backUp = this.backUp.back;
+        this.colTip = this.backUp.colTip;
+        this.rowTip = this.backUp.rowTip;
         
         for(int i = 0; i < this.width; i++){
-            this.grid[i] = Arrays.copyOf(backup.grid[i], this.height);
+            this.grid[i] = Arrays.copyOf(this.backUp.grid[i], this.height);
             this.changedCols[i] = false;
         }
         for(int i = 0; i < height; i++){
@@ -368,9 +475,14 @@ public class Solver implements Runnable{
         }
     }
     
-    private boolean backUp(){
+    /**
+     * A fejtő <code>{@link PuzzleBackup}</code> példányát állítja vissza, majd korrigálja a tippelési hibát.
+     * @return Igaz({@code true}), ha sikeres a visszaállítás.
+     * Hamis({@code false}), ha nincs eltárolva backUp objektum.
+     */
+    public boolean backUp(){
         if(this.backUp != null){
-            this.backUpCopy(this.backUp); //visszaallitjuk
+            this.backUpCopy();
             this.set(this.rowTip,this.colTip,1);
             this.changedCols[this.colTip] = true;
             this.changedRows[this.rowTip] = true;
@@ -381,7 +493,12 @@ public class Solver implements Runnable{
         return false;
     }
     
-    private boolean isComplete(){
+    /**
+     * Megállapítja, hogy a rejtvény fejtése készen van-e.
+     * @return Igaz({@code true}), ha a rejtvény kész.
+     * Hamis({@code false}), ha a rejtvény nincs kész.
+     */
+    public boolean isComplete(){
         this.isRow = true;
         for(int i = 0; i < this.height; i++){
             if(this.count(i, -1, false) > 0){
@@ -397,6 +514,11 @@ public class Solver implements Runnable{
         return true;
     }
         
+    /**
+     * Kiválaszt egy mezőt, és tippel.
+     * @return Igaz({@code true}), ha talált alkalmas mezőt a tipphez.
+     * Hamis({@code false}), ha nem talált alkalmas mezőt.
+     */
     private boolean takeTip(){
         int index = this.selectByPrior(false,true);
         if(this.isRow){
@@ -420,7 +542,7 @@ public class Solver implements Runnable{
     }
         
     /**
-     * A fejtés indítása
+     * Elindítja a fejtést.
      */
     @Override
     public void run(){
@@ -503,21 +625,28 @@ public class Solver implements Runnable{
     }
     
     /**
-     * A fejtés leállítása
+     * Leállítja a fejtést.
      */
     public void stop(){
         this.isStopped = true;
     }
     
     /**
-     * Az aktuálisan aktív sor/oszlop indexét adja vissza
-     * @return Aktuális sor/oszlop index
+     * Az aktuálisan aktív sor/oszlop indexét adja vissza.
+     * @return Aktuális sor/oszlop index.
      */
     public int getActiveLine(){
         return this.active;
     }
     
-    private String print(int index, String text){
+    /**
+     * Szöveggé alakítja a kívánt sort/oszlopot.
+     * Az <code>{@link Solver#isRow}</code> függvényében az adott indexben lévő sort, vagy oszlopot vizsgálja.
+     * @param index A sor vagy oszlop indexe.
+     * @param text A String elejéhez hozzáfűzendő szöveg.
+     * @return A kívánt sor/oszlop String-je.
+     */
+    public String print(int index, String text){
         text += ": ";
         int len = (this.isRow)?this.width:this.height;
         for(int i=0; i < len; i++){

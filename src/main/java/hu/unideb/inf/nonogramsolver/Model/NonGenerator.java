@@ -15,13 +15,34 @@ import javax.imageio.ImageIO;
  * @author wazemaki
  */
 public class NonGenerator {
+    /**
+     * Eredeti kép objektuma.
+     */
     private BufferedImage MasterImage;
+    /**
+     * Átméretezett kép objektuma.
+     */
     private BufferedImage ResizedImage;
+    /**
+     * Rajzolási adatok <code>{@link DrawingData}</code> objektum formájában.
+     */
     private final DrawingData drawData;
+    /**
+     * Generált rejtvény adatai.
+     */
     private int[][] data;
     
+    /**
+     * A rejtvény méretei.
+     */
     private int height, width;
+    /**
+     * Aktuális küszöbszint.
+     */
     private int threshold;
+    /**
+     * Flag, mely jelzi, hogy engedélyezett-e a színek ínvertálása.
+     */
     private boolean invertCol;
     
     /**
@@ -67,7 +88,7 @@ public class NonGenerator {
     /**
      * A generálandó képet állítja be.
      * @param file A képfájl objektuma.
-     * @throws IOException
+     * @throws IOException Valamilyen I/O hiba lépett fel.
      */
     public void setFile(File file) throws IOException{
         this.MasterImage = ImageIO.read(file);

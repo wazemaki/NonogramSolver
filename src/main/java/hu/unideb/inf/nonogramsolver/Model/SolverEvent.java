@@ -1,4 +1,4 @@
-package hu.unideb.inf.nonogramsolver.Model.Solver;
+package hu.unideb.inf.nonogramsolver.Model;
 
 /**
  * Fejtő esemény.
@@ -7,7 +7,7 @@ package hu.unideb.inf.nonogramsolver.Model.Solver;
  */
 public interface SolverEvent<T>{
    /**
-     * Az események lehetséges típusai
+     * Az események lehetséges típusai.
      */
     public static final byte 
             EVENT_START = 1,

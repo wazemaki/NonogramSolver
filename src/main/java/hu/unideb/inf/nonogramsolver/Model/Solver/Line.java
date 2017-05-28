@@ -1,28 +1,42 @@
 package hu.unideb.inf.nonogramsolver.Model.Solver;
 
 /**
- * Egy sort reprezentál. A <code>{@link Solver}</code> objektum segéd-sorokként használja a fejtéshez.
+ * Egy sort/oszlopot reprezentál. A <code>{@link Solver}</code> objektum segéd-sorokként használja a fejtéshez.
  *
  * @author wazemaki
  */
-public class Row {
+public class Line {
+    
     /**
-     * Konstruktor
+     * A sor mezőit tartalmazó tömb.
+     */
+    private int[] data;
+    /**
+     * A sor hossza.
+     */
+    private int length;
+    /**
+     * A sor aktuális indexe.
+     */
+    private int index = 0;
+    
+    /**
+     * Konstruktor.
      *
      * @param length A sor hosszát határozza meg
     */
-    public Row(int length) {
+    public Line(int length) {
         this.index = 0;
         this.length = length;
         this.data = new int[this.length];
         this.set(0, -1, -1);
     }
     /**
-     * Konstruktor
+     * Konstruktor.
      *
      * @param other Sor, amit a konstruktor lemásol
     */
-    public Row(Row other){
+    public Line(Line other){
         this.length = other.getLength();
         this.data = new int[this.length];
         for(int i = 0; i < this.length; i++){
@@ -30,47 +44,14 @@ public class Row {
         }
     }
     
-    private int[] data;
-    private int length;
-    private int index = 0;
-
     /**
-     *
-     * @param i
-     * @return
-     */
-    public int get(int i) {
-        if(i < this.length){
-            return this.data[i];
-        } else {
-            return -1;
-        }
-    }
-
-    /**
-     *
-     * @return
-     */
-    public int getLength() {
-        return this.length;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public int getIndex() {
-        return this.index;
-    }
-    
-    /**
-     * Konstruktor
+     * Konstruktor.
      *
      * @param other Sor, amit másolunk
      * @param length Ha igaz, egy az egyben lemásoljuk a sort. Ha hamis, az eredeti sor hossza megmarad.
-     * @return 
+     * @return A {@code Line} objektum.
     */
-    public Row setByRow(Row other, Boolean length){
+    public Line setByRow(Line other, Boolean length){
         if (this != other) {
             if(length) {
                 this.length = other.getLength();
@@ -83,16 +64,44 @@ public class Row {
         }
         return this;
     }
+
+    /**
+     * Egy mező színét adja vissza.
+     * @param index A mező indexe
+     * @return A mező színe
+     */
+    public int get(int index) {
+        if(index < this.length){
+            return this.data[index];
+        } else {
+            return -1;
+        }
+    }
+
+    /**
+     * A sor hosszát adja vissza.
+     * @return A sor hossza.
+     */
+    public int getLength() {
+        return this.length;
+    }
+
+    /**
+     * A sor aktuális indexét adja vissza.
+     * @return A sor indexe.
+     */
+    public int getIndex() {
+        return this.index;
+    }
         
     /**
      * Beállítja a sor egy(vagy több, egymást követő) elemének színét.
-     *
      * @param i A színezendő elemek kezdő indexe
      * @param l A színezendő elemek hossza
-     * @param color A kívánt szín (-1, 0, 1)
-     * @return 
+     * @param color A kívánt szín {@code (-1|0|1)}
+     * @return A {@code Line} objektum.
     */
-    public Row set(int i,int l, int color){
+    public Line set(int i,int l, int color){
         if(i == -1) i = this.index;
         if(l == -1) l = this.length;
 //        if(color == null) color = 1;
@@ -104,44 +113,41 @@ public class Row {
     }
   
     /**
-     * A sor hosszát állítja
-     *
+     * A sor hosszát állítja.
      * @param length A kívánt hossz
-     * @return 
+     * @return A {@code Line} objektum.
     */
-    public Row setLength(int length) {
+    public Line setLength(int length) {
         this.length = length;
         return this;
     }
             
     /**
-     * A sor aktuális indexét állítja
-     *
+     * A sor aktuális indexét állítja.
      * @param index A kívánt index
-     * @return 
+     * @return A {@code Line} objektum.
     */
-    public Row setIndex(int index) {
+    public Line setIndex(int index) {
         this.index = index;
         return this;
     }
                 
     /**
-     * Lépteti egyel az indexet
-     * @return 
+     * Lépteti eggyel az indexet.
+     * @return A {@code Line} objektum.
     */
-    public Row stepIndex() {
+    public Line stepIndex() {
         this.index++;
         return this;
     }
     
     /**
-     * Egy másik sorral alkotott, elemenkénti logikai ÉS művelet eredményét adja
-     *
+     * Egy másik {@code Line} objektummal alkotott, mezőnkénti logikai ÉS műveletet végez.
      * @param r A sor, amellyel az ÉS műveletet végezzük
      * @param color A szín, amelyet figyelünk
-     * @return 
+     * @return A {@code Line} objektum.
     */
-    public Row logic_AND(Row r, int color){
+    public Line logic_AND(Line r, int color){
         for(int i = 0; i < this.length; i++){
             this.data[i] = (r.get(i) == color && this.data[i] == color)? color : -1;
         }
@@ -149,13 +155,12 @@ public class Row {
     }
         
     /**
-     * Egy másik sorral alkotott, elemenkénti logikai VAGY művelet eredményét adja
-     *
+     * Egy másik {@code Line} objektummal alkotott, elemenkénti logikai VAGY műveletet végez.
      * @param r A sor, amellyel az VAGY műveletet végezzük
      * @param color A szín, amelyet figyelünk
-     * @return 
+     * @return A {@code Line} objektum.
     */
-    public Row logic_OR(Row r, int color){
+    public Line logic_OR(Line r, int color){
         for(int i = 0; i < this.length; i++){
             if(r.get(i) == color){
                 this.data[i] = color;
@@ -165,13 +170,12 @@ public class Row {
     }
     
     /**
-     * Hozzáfűz a sorhoz
-     *
+     * Hozzáfűz a sorhoz.
      * @param l A hozzáfűzendő elemek hossza
      * @param color A hozzáfűzendő elemek színe
-     * @return 
+     * @return A {@code Line} objektum.
     */
-    public Row append(int l,int color){
+    public Line append(int l,int color){
 
         int j;
         for(j = this.index; j < this.index + l; j++){
@@ -185,24 +189,20 @@ public class Row {
     }
     
     /**
-     * A sorban lévő üres elemek számát adja
-     *
-     * @param empty  Ha igaz(alapért.) Az üres elemek számát adja. Ha hamis, a nem üres elemek számát adja.
-     * @return 
+     * A sorban lévő, nem üres elemek számát adja.
+     * @return Üres elemek száma.
     */
-    public int getDeficit(Boolean empty){
-        if(empty == null) empty = true;
+    public int getFilledCnt(){
         int sum = 0;
         for(int i = 0; i < this.length; i++){
-            if(this.data[i] == -1) sum++;
+            if(this.data[i] != -1) sum++;
         }
-        return (empty) ? sum : this.length - sum;
+        return sum;
     }
         
     /**
-     * Szöveggé alakít
-     * (fejlesztői, hibakeresési célok)
-     *
+     * Szöveggé alakít, majd kiír.
+     * (fejlesztői, hibakeresési célokra)
      * @param txt A sztring elején található szöveg
     */
     public void print(String txt){
@@ -222,5 +222,4 @@ public class Row {
         }
         System.out.println(txt);
     }
-    
 }

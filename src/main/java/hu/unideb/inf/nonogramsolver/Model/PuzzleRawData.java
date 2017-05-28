@@ -5,13 +5,19 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * Nyers puzzle-adatok. Maga a feladvány. Tartalmazza a rejtvények leírását is.
+ * Nyers puzzle-adatok; maga a feladvány. Tartalmazza a rejtvények leírását is.
  * @author wazemaki
  */
 public class PuzzleRawData {
     
-    private final List<List<Integer>> rawCols;
-    private final List<List<Integer>> rawRows;
+    /**
+     * Oszlopok, sorok listája.
+     */
+    private final List<List<Integer>> rawCols,
+            rawRows;
+    /**
+     * A rejtvény leírása.
+     */
     private String description;
     
     /**
@@ -137,7 +143,7 @@ public class PuzzleRawData {
      * Egy sor egy számát adja vissza.
      * @param row A sor indexe.
      * @param index A kívánt szám indexe a sorban.
-     * @return
+     * @return A kívánt szám.
      */
     public Integer getNumberFromRow(int row, int index){
         try{
@@ -151,7 +157,7 @@ public class PuzzleRawData {
      * Egy oszlop egy számát adja vissza.
      * @param col Az oszlop indexe.
      * @param index A kívánt szám indexe az oszlopban.
-     * @return
+     * @return A kívánt szám.
      */
     public Integer getNumberFromCol(int col,int index){
         try{

@@ -1,4 +1,4 @@
-package hu.unideb.inf.nonogramsolver.Model;
+package hu.unideb.inf.nonogramsolver.GUI;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -12,18 +12,18 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 /**
- *
+ * Statikus metódusokat tartalmaz, amelyek segítik a grafikus felhasználói felület létrehozását.
  * @author wazemaki
  */
-public class StaticWindowHandler {
+public final class WindowHandler {
     
     /**
-     *
-     * @param parent
-     * @param title
-     * @param width
-     * @param height
-     * @param onCloseEvent
+     * Megjelenít egy ablakot.
+     * @param parent Szülő-ablak.
+     * @param title Az ablak címe.
+     * @param width Az ablak szélessége.
+     * @param height Az ablak magassága.
+     * @param onCloseEvent Az ablak bezárásakor létrejövő esemény. Ha {@code null}, akkor nem lesz esemény bezáráskor.
      */
     public static void showWindow(Parent parent, String title, Integer width, Integer height, EventHandler<WindowEvent> onCloseEvent){
         Stage stage = new Stage();
@@ -47,11 +47,12 @@ public class StaticWindowHandler {
     }
     
     /**
-     *
-     * @param node
-     * @param enabledFiletypes
-     * @param isSaveDialog
-     * @return
+     * Megnyit egy fájlválasztó panelt, majd visszatér az itt kiválasztott fájl-al.
+     * @param node Szülő ablak.
+     * @param enabledFiletypes Engedélyezett fiájltípusok listája.
+     * @param isSaveDialog Igaz({@code true}): A fájlválasztó egy mentési fájl-választó lesz.
+     * Hamis({@code false}) A fájlválasztó egy megnyitási fájl-választó lesz.
+     * @return A kiválasztott fájl. {@code null}, ha nincs kiválsztva fájl.
      */
     public static File getFileFromChooser(Node node, String[] enabledFiletypes, boolean isSaveDialog){
         

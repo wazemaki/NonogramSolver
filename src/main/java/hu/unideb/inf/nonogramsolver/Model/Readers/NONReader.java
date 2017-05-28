@@ -15,7 +15,13 @@ import java.util.List;
  */
 public class NONReader implements nonogramReader {
 
+    /**
+     * Nyers puzzle-adatok.
+     */
     private final PuzzleRawData puzzle;
+    /**
+     * Az olvasandó <code>{@link File}</code> objektum.
+     */
     private final File file;
 
     /**
@@ -30,8 +36,8 @@ public class NONReader implements nonogramReader {
     /**
      * A nonogram file olvasása <code>{@link PuzzleRawData}</code> objektumba.
      * @return <code>{@link PuzzleRawData}</code> objektum, mely tartalmazza a beolvasott rejtvényt.
-     * @throws IOException
-     * @throws SolverException
+     * @throws IOException Valamilyen I/O hiba lépett fel.
+     * @throws SolverException Formailag hibás a rejtvény.
      */
     @Override
     public PuzzleRawData read() throws IOException, SolverException {
@@ -39,18 +45,26 @@ public class NONReader implements nonogramReader {
         return this.readNONStream(is, ",");
     }
 
+    /**
+     * NON formátumot tartalmazó stream olvasása <code>{@link PuzzleRawData}</code> objektumba.
+     * @param br Pufferelt stream, melyből olvas.
+     * @param delimiter A számokat elválasztó karakter.
+     * @return <code>{@link PuzzleRawData}</code> objektum, mely tartalmazza a beolvasott rejtvényt.
+     * @throws IOException Valamilyen I/O hiba lépett fel.
+     * @throws SolverException Formailag hibás a rejtvény.
+     */
     private PuzzleRawData readNONStream(BufferedReader br, String delimiter) throws IOException, SolverException {
-        int part = 0; // 0 - nem erdekes, 1 - sorok, 2 - oszlopok
+        int part = 0;
         for (String line; (line = br.readLine()) != null;) {
 
             if (line.equals("")) {
                 continue;
             }
             if (line.equals("rows")) {
-                part = 1; //sorok kovetkeznek..
+                part = 1;
                 continue;
             } else if (line.equals("columns")) {
-                part = 2; //oszlopok kovetkeznek
+                part = 2;
                 continue;
             }
             if (part != 0) {

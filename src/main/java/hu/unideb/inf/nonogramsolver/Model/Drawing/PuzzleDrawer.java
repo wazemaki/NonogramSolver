@@ -6,18 +6,30 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 /**
- *
+ * A rajzolásért felelős osztály.
  * @author wazemaki
  */
 public class PuzzleDrawer {
     
+    /**
+     * {@link GraphicsContext} objektum, ennek segítségével rajzol.
+     */
     private final GraphicsContext gc;
-    private boolean drawGrid;
-    private boolean drawNumbers;
+    /**
+     * Engedélyező flagek. Rács rajzolása, számok rajzolása.
+     */
+    private boolean drawGrid,
+            drawNumbers;
     
-    private int width, height, gridSize, startX, startY, xOffset, yOffset;
-    private int fullWidthPx, fullHeightPx, xOffsetPx, yOffsetPx;
+    /**
+     * Rajzoláshoz szükséges méretek.
+     */
+    private int width, height, gridSize, startX, startY, xOffset, yOffset,
+            fullWidthPx, fullHeightPx, xOffsetPx, yOffsetPx;
     
+    /**
+     * Nyers rejtvény, amely tartalmazza a rajzolandó számokat.
+     */
     private PuzzleRawData numbers;
     
     /**
@@ -156,6 +168,9 @@ public class PuzzleDrawer {
         }
     }
     
+    /**
+     * Kirajzolja a négyzethálót.
+     */
     private void drawGrid(){
         gc.setLineWidth(1);
         gc.setStroke(Color.GREY);
@@ -170,6 +185,9 @@ public class PuzzleDrawer {
         }
     }
     
+    /**
+     * Kirajzolja a számokat.
+     */
     private void drawNumbers(){
         gc.setFill(Color.BLACK);
         gc.setFont(new Font( this.gridSize * 0.7));

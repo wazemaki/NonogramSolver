@@ -11,7 +11,7 @@ public interface nonogramReader {
     /**
      * Olvasás indítása.
      * @return <code>{@link PuzzleRawData}</code> objektum, mely tartalmazza a beolvasott rejtvényt.
-     * @throws Exception
+     * @throws Exception Valamilyen hiba lépett fel.
      */
     public PuzzleRawData read() throws Exception ;
 }

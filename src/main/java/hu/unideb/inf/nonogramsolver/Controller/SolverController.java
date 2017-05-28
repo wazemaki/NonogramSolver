@@ -4,7 +4,7 @@ import hu.unideb.inf.nonogramsolver.Model.Drawing.RedrawTask;
 import hu.unideb.inf.nonogramsolver.Model.Drawing.DrawingData;
 import hu.unideb.inf.nonogramsolver.Model.Solver.Solver;
 import hu.unideb.inf.nonogramsolver.Model.PuzzleRawData;
-import hu.unideb.inf.nonogramsolver.Model.Solver.SolverEvent;
+import hu.unideb.inf.nonogramsolver.Model.SolverEvent;
 import hu.unideb.inf.nonogramsolver.Model.SolverException;
 /**
  * A fejtő vezérlését végzi.
@@ -12,16 +12,35 @@ import hu.unideb.inf.nonogramsolver.Model.SolverException;
  */
 public class SolverController {
     
-    private SolverEvent<String> startEvent;
-    private SolverEvent<String> endEvent;
-    private SolverEvent<String> errorEvent;
-    private SolverEvent<String> completeEvent;
-    private SolverEvent<String> stoppedEvent;
+    /**
+     * A fejtő eseményei.
+     */
+    private SolverEvent<String> startEvent,
+            endEvent,
+            errorEvent,
+            completeEvent,
+            stoppedEvent;
+    
+    /**
+     * A fejtő rajz-eseménye.
+     */
     private RedrawTask redrawEvent;
     
+    /**
+     * A rajzolandó objektum.
+     */
     private final DrawingData drawData;
-    private Solver puzzle;
+    /**
+     * A fejtő.
+     */
+    private Solver solver;
+    /**
+     * A fejtő Thread-je.
+     */
     private Thread thread;
+    /**
+     * A nyers rejtvény-adatok.
+     */
     private PuzzleRawData rawData;
     
     /**
@@ -36,25 +55,19 @@ public class SolverController {
      * Eseményt állít be a fejtőnek.
      * @param eventType Az esemény típusa.
      * @param event Az esemény objektuma.
-     * @return
      */
-    public boolean setEvent(byte eventType, SolverEvent event){
+    public void setEvent(byte eventType, SolverEvent event){
         switch(eventType){
             case SolverEvent.EVENT_START:
                 this.startEvent = event;
-                return true;
             case SolverEvent.EVENT_END:
                 this.endEvent = event;
-                return true;
             case SolverEvent.EVENT_ERROR:
                 this.errorEvent = event;
-                return true;
             case SolverEvent.EVENT_COMPLETE:
                 this.completeEvent = event;
-                return true;
             case SolverEvent.EVENT_STOP:
                 this.stoppedEvent = event;
-                return true;
             case SolverEvent.EVENT_REDRAW:
                 this.redrawEvent = new RedrawTask() {
                     @Override
@@ -62,9 +75,7 @@ public class SolverController {
                         event.run(data);
                     }
                 };
-                return true;
         }
-        return false;
     }
     
     /**
@@ -77,8 +88,8 @@ public class SolverController {
     
     /**
      * Leellenőrzi, hogy a betöltött rejtvény nem-e üres, vagy hibás.
-     * @return Igaz{@code true}, ha a rejtvény érvényes.
-     * Hamis{@code false}, ha a rejtvény nem érvényes.
+     * @return Igaz({@code true}), ha a rejtvény érvényes.
+     * Hamis({@code false}), ha a rejtvény nem érvényes.
      */
     public boolean isValidPuzzle(){
         return !(this.rawData == null || this.rawData.isEmpty());
@@ -112,17 +123,17 @@ public class SolverController {
      * A betöltött rejtvény megfejtését indítja el.
      * @param enBackup Visszalépés(tippelés) engedélyezése
      * @param enPrior Prioritás szerinti sorválasztás engedélyezése.
-     * @throws SolverException
+     * @throws SolverException Kivételt dob, ha a fejtő foglalt, nincs betöltve rejtvény, vagy nem érvényes a rejtvény.
      */
     public void solve(boolean enBackup, boolean enPrior) throws SolverException{
         if(!this.checkIsFree()){
             throw new SolverException("A fejtő foglalt.\n  Várjuk meg, amíg befejezi, vagy állítsuk meg!",3);
         }
         if(!this.isValidPuzzle()){
-            throw new SolverException("Érvénytelen rejtvény, valószínűleg sorok, vagy oszlopok hiányoznak.",2);
+            throw new SolverException("Érvénytelen rejtvény, vagy nincs betöltve.",2);
         }
-        this.puzzle = new Solver(this.rawData.getCols(),this.rawData.getRows(),this,enBackup,enPrior);
-        this.thread = new Thread (this.puzzle, "Solving");
+        this.solver = new Solver(this.rawData.getCols(),this.rawData.getRows(),this,enBackup,enPrior);
+        this.thread = new Thread (this.solver, "Solving");
         this.thread.start();
     }
     
@@ -131,7 +142,7 @@ public class SolverController {
      * @return A fejtő.
      */
     public Solver getSolver(){
-        return this.puzzle;
+        return this.solver;
     }
     
     /**
@@ -147,8 +158,8 @@ public class SolverController {
      * Megállítja a fejtést.
      */
     public void stopSolving(){
-        if(this.thread != null && this.puzzle != null){
-            this.puzzle.stop();
+        if(this.thread != null && this.solver != null){
+            this.solver.stop();
         }
     }
     
@@ -207,8 +218,8 @@ public class SolverController {
      * "Redraw" eseményt hív meg.
      */
     public void callOnRedraw(){
-        if(this.redrawEvent != null && this.puzzle != null){
-            this.drawData.setData(this.puzzle.getGrid(), this.puzzle.getIsRow(), this.puzzle.getActiveLine());
+        if(this.redrawEvent != null && this.solver != null){
+            this.drawData.setData(this.solver.getGrid(), this.solver.getIsRow(), this.solver.getActiveLine());
             this.redrawEvent.run(this.drawData);
         }
     }

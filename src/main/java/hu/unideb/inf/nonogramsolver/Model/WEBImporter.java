@@ -9,22 +9,30 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- *
+ * Internetről importál rejtvényeket.
+ * A rejtvényt a <a href="http://webpbn.com">webpbn.com</a> oldalról importálja,
+ * egy kifejezettem erre alkalmas felületen, GET-kérések segítségével.
+ * Az oldalról {@code .non} formában kerülnek letöltésre a rejtvények.
+ * Egy-egy rejtvény azonosítójának megszerzéséhez látogasson el a feltüntetett oldalra.
+ * A WEbPBN exportáló felülete, további információkkal együtt itt található:
+ * <a href="http://webpbn.com/export.cgi">webpbn.com/export.cgi</a>
+ * Jelen program semmilyen formában nem terjeszti; nem adja tovább az innen importált rejtvényeket.
+ * Az importálás kizárólag tanulmányi célra van használva!
  * @author wazemaki
  */
 public class WEBImporter{ 
     
     /**
-     *
+     * Az importáló statikus címe.
      */
-    public static final String URI = "http://webpbn.com/export.cgi";
+    private static final String URI = "http://webpbn.com/export.cgi";
     
     /**
-     *
-     * @param id
-     * @return
-     * @throws IOException
-     * @throws SolverException
+     * Importál.
+     * @param id A WebPBN adatbázis-beli azonosító
+     * @return <code>{@link PuzzleRawData}</code> objektum, amelyet az importáló készít a webes adatok alapján.
+     * @throws IOException I/O hiba lépett fel.
+     * @throws SolverException Amennyiben nem sikerül az importálás, az oldal hibaüzenetei a kivételben olvashatók.
      */
     public static PuzzleRawData importPuzzle(String id) throws IOException, SolverException {
         

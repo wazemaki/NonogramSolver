@@ -6,7 +6,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import static javafx.application.Application.launch;
 
-
+/**
+ * Main osztály.
+ */
 public class Main extends Application {
 
 
@@ -24,9 +26,9 @@ public class Main extends Application {
     }
 
     /**
-     * 
+     * Main metódus, indítja az alkalmazást.
      *
-     * @param args the command line arguments
+     * @param args Argumentumok
      */
     public static void main(String[] args) {
         launch(args);

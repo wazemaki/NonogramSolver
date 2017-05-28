@@ -7,12 +7,10 @@ import java.util.Arrays;
  * @author wazemaki
  */
 public class PuzzleBackup {
-    private int width, height;
-
     /**
-     * A fejtés végét jelző flag.
+     * A rejtvény méretei.
      */
-    protected boolean isEnd;
+    private final int width, height;
 
     /**
      * Az esetlegesen már korábban a fejtőben tárolt back-up objektum.
@@ -20,12 +18,12 @@ public class PuzzleBackup {
     protected PuzzleBackup back;
     
     /**
-     * A tippelt koordináták
+     * A tippelt koordináták.
      */
     protected int colTip, rowTip;
 
     /**
-     * A négyzetrács adatai
+     * A négyzetrács adatai.
      */
     protected int[][] grid;
     
@@ -36,7 +34,6 @@ public class PuzzleBackup {
     public PuzzleBackup(Solver solver){
         this.height = solver.height;
         this.width = solver.width;
-        this.isEnd = solver.isEnd;
         this.back = solver.backUp;
         this.colTip = solver.colTip;
         this.rowTip = solver.rowTip;

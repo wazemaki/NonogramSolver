@@ -7,7 +7,7 @@ package hu.unideb.inf.nonogramsolver.Model.Drawing;
 public final class DrawingData {
 
     /**
-     * Az aktuális index értéket tárolja (piros vonal rajzolásához)
+     * Az aktuális index értéket tárolja (piros vonal rajzolásához).
      */
     public int activeIndex;
 

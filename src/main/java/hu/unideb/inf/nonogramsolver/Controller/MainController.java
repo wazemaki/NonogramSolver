@@ -4,7 +4,7 @@ import hu.unideb.inf.nonogramsolver.Model.PuzzleRawData;
 import hu.unideb.inf.nonogramsolver.Model.Readers.NONReader;
 import hu.unideb.inf.nonogramsolver.Model.Readers.XMLReader;
 import hu.unideb.inf.nonogramsolver.Model.Readers.nonogramReader;
-import hu.unideb.inf.nonogramsolver.Model.Solver.SolverEvent;
+import hu.unideb.inf.nonogramsolver.Model.SolverEvent;
 import hu.unideb.inf.nonogramsolver.Model.SolverException;
 import hu.unideb.inf.nonogramsolver.Model.StopWatch;
 import hu.unideb.inf.nonogramsolver.Model.WEBImporter;
@@ -18,7 +18,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 /**
- * Main kontroller, mindennek a vezérlője.
+ * Main kontroller.
  * @author wazemaki
  */
 public class MainController {
@@ -29,14 +29,23 @@ public class MainController {
     protected SolverController solverController = new SolverController();
     
     /**
-     * Logger példány
+     * Logger példány.
      */
     protected static final Logger LOGGER = Logger.getLogger( MainController.class.getName() );
 
+    /**
+     * Stopper a futási idők méréséhez.
+     */
     private final StopWatch stopwatch = new StopWatch();
     
+    /**
+     * A betöltött fájl információja.
+     */
     private String fileInfo;
     
+    /**
+     * A betöltött nyers rejtvény.
+     */
     private PuzzleRawData rawData;
     
     /**
@@ -119,6 +128,10 @@ public class MainController {
         this.setRawData(raw,"WEBPBN.COM " + id);
     }
     
+    /**
+     * A fájl információit tárolja szövegként.
+     * @param title A rejtvény címe.
+     */
     private void setFileInfo(String title) {
         if(this.rawData != null){
             this.fileInfo = "--- " + title + " ---"

@@ -11,7 +11,7 @@ public interface nonogramOutput {
     /**
      * A fájl írása.
      * @param file A mentendő <code>{@link File}</code> objektum.
-     * @throws Exception
+     * @throws Exception Valamilyen kivétel történt.
      */
     public void write(File file) throws Exception ;
 }

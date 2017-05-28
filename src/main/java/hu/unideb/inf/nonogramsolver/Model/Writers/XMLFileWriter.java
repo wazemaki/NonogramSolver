@@ -22,6 +22,9 @@ import org.w3c.dom.Element;
  */
 public class XMLFileWriter {
 
+    /**
+     * A mentendő nyers rejtvény-adatok.
+     */
     private final PuzzleRawData rawData;
 
     /**
@@ -35,9 +38,9 @@ public class XMLFileWriter {
     /**
      * Fájl összeállítása és írása.
      * @param file A mentendő <code>{@link File}</code> objektum.
-     * @throws IOException
-     * @throws TransformerException
-     * @throws ParserConfigurationException
+     * @throws IOException Valamilyen I/O hiba lépett fel.
+     * @throws TransformerException Transformer objektum hiba történt.
+     * @throws ParserConfigurationException Parser hiba történt.
      */
     public void write(File file) throws IOException, TransformerException, ParserConfigurationException {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

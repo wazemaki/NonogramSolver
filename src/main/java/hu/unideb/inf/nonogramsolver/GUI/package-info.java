@@ -3,4 +3,4 @@
  * 
  * @author wazemaki
  */
-package hu.unideb.inf.nonogramsolver.Controller.GUI;
+package hu.unideb.inf.nonogramsolver.GUI;

@@ -1,0 +1,3 @@
+# NonogramSolver
+
+Nonogram fejtő.

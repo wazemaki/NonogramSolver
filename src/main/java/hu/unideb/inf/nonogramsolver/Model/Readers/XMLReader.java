@@ -14,9 +14,18 @@ import org.xml.sax.SAXException;
  * @author wazemaki
  */
 public class XMLReader implements nonogramReader{
+    /**
+     * Nyers rejtvény-adatok.
+     */
     private final PuzzleRawData puzzle;
+    /**
+     * Az olvasandó fájl.
+     */
     private final File file;
     
+    /**
+     * Statikus hibaüzenet.
+     */
     private final static String ERRMSG = "Érvénytelen nonogram XML fájl";
     
     /**
@@ -31,10 +40,10 @@ public class XMLReader implements nonogramReader{
     /**
      * Az XML file olvasása <code>{@link PuzzleRawData}</code> objektumba.
      * @return <code>{@link PuzzleRawData}</code> objektum, mely tartalmazza a beolvasott rejtvényt.
-     * @throws ParserConfigurationException
-     * @throws IOException
-     * @throws SAXException
-     * @throws SolverException
+     * @throws ParserConfigurationException Parser konfigurációs hiba.
+     * @throws IOException Valamilyen I/O hiba lépett fel.
+     * @throws SolverException Formailag hibás a rejtvény.
+     * @throws SAXException SAX hiba lépett fel.
      */
     @Override
     public PuzzleRawData read() throws ParserConfigurationException, IOException, SAXException, SolverException {
@@ -67,6 +76,11 @@ public class XMLReader implements nonogramReader{
         return this.puzzle;
     }
     
+    /**
+     * Egy-egy sort olvas egy XML elemből.
+     * @param cluesElement Az olvasandó elem.
+     * @throws SolverException Formai hiba.
+     */
     private void readLines(Element cluesElement) throws SolverException{
         
         NodeList lineElements = cluesElement.getElementsByTagName("line");
@@ -89,6 +103,10 @@ public class XMLReader implements nonogramReader{
         }
     }
     
+    /**
+     * A rejtvény leírását olvassa illetve állítja össze.
+     * @param element A leírást, egyéb információkat tartalmazó XML elem.
+     */
     private void readDescription(Element element){
         Node title = element.getElementsByTagName("title").item(0);
         if(title != null){

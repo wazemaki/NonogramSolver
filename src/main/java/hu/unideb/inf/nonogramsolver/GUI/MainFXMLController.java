@@ -1,10 +1,9 @@
-package hu.unideb.inf.nonogramsolver.Controller.GUI;
+package hu.unideb.inf.nonogramsolver.GUI;
 
 import hu.unideb.inf.nonogramsolver.Controller.MainController;
 import hu.unideb.inf.nonogramsolver.Model.Drawing.DrawingData;
 import hu.unideb.inf.nonogramsolver.Model.PuzzleRawData;
-import hu.unideb.inf.nonogramsolver.Model.Solver.SolverEvent;
-import hu.unideb.inf.nonogramsolver.Model.StaticWindowHandler;
+import hu.unideb.inf.nonogramsolver.Model.SolverEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -47,7 +46,7 @@ public class MainFXMLController extends MainController implements Initializable{
 
     @FXML
     private void openFileAction(ActionEvent event){
-        File file = StaticWindowHandler.getFileFromChooser((Node) event.getSource(), new String[]{"non","xml"},false);
+        File file = WindowHandler.getFileFromChooser((Node) event.getSource(), new String[]{"non","xml"},false);
         this.loadPuzzleFromFile(file);
         this.showFileData();
     }
@@ -67,14 +66,14 @@ public class MainFXMLController extends MainController implements Initializable{
     
     @FXML
     private void saveAsAction(ActionEvent e) {
-        File file = StaticWindowHandler.getFileFromChooser((Node) e.getSource(), new String[]{"xml"},true);
+        File file = WindowHandler.getFileFromChooser((Node) e.getSource(), new String[]{"xml"},true);
         this.savePuzzle(file);
     }
     
     @FXML
     private void generateAction(ActionEvent e) throws IOException {
 
-        File file = StaticWindowHandler.getFileFromChooser
+        File file = WindowHandler.getFileFromChooser
             ((Node) e.getSource(), new String[]{"jpg","jpeg","png","bmp"}, false);
 
         if (file != null) {
@@ -104,7 +103,7 @@ public class MainFXMLController extends MainController implements Initializable{
         
         this.initGridSizes();
 
-        StaticWindowHandler.showWindow(root,
+        WindowHandler.showWindow(root,
                 "Nonogram fejtő",
                 this.gridController.getCanvasWidth(),
                 this.gridController.getCanvasHeight(),
@@ -119,7 +118,7 @@ public class MainFXMLController extends MainController implements Initializable{
 
         Parent root = (Parent) loader.load();
 
-        StaticWindowHandler.showWindow(root,
+        WindowHandler.showWindow(root,
                 "Generálás",
                 null,null,null);
     }

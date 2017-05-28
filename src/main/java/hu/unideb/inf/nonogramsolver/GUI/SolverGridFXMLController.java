@@ -1,7 +1,6 @@
-package hu.unideb.inf.nonogramsolver.Controller.GUI;
+package hu.unideb.inf.nonogramsolver.GUI;
 
 import hu.unideb.inf.nonogramsolver.Model.Drawing.PuzzleDrawer;
-import hu.unideb.inf.nonogramsolver.Model.StaticWindowHandler;
 import hu.unideb.inf.nonogramsolver.Model.Writers.ImageWriter;
 import java.io.File;
 import java.net.URL;
@@ -49,7 +48,7 @@ public class SolverGridFXMLController implements Initializable{
     @FXML
     private void saveImageAction(ActionEvent e){
         
-        File file = StaticWindowHandler.getFileFromChooser
+        File file = WindowHandler.getFileFromChooser
             ((Node) e.getSource(), new String[]{"jpg","jpeg","png","bmp"}, true);
         
         if(file != null) {

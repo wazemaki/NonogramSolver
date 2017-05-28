@@ -1,4 +1,4 @@
-package hu.unideb.inf.nonogramsolver.Controller.GUI;
+package hu.unideb.inf.nonogramsolver.GUI;
 
 import hu.unideb.inf.nonogramsolver.Model.NonGenerator;
 import hu.unideb.inf.nonogramsolver.Model.Drawing.PuzzleDrawer;

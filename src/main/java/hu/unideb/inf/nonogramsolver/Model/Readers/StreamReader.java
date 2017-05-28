@@ -13,10 +13,13 @@ import java.util.List;
  */
 public class StreamReader implements nonogramReader{
     
+    /**
+     * Olvasó.
+     */
     private final BufferedReader bReader;
     
     /**
-     * Konstruktor
+     * Konstruktor.
      * @param br <code>{@link BufferedReader}</code> objektum, ahonnan olvas.
      */
     public StreamReader(BufferedReader br){
@@ -26,13 +29,13 @@ public class StreamReader implements nonogramReader{
     /**
      * A stream file olvasása <code>{@link PuzzleRawData}</code> objektumba.
      * @return <code>{@link PuzzleRawData}</code> objektum, mely tartalmazza a beolvasott rejtvényt.
-     * @throws IOException
-     * @throws SolverException
+     * @throws IOException Valamilyen I/O hiba lépett fel.
+     * @throws SolverException Formailag hibás a rejtvény.
      */
     @Override
     public PuzzleRawData read() throws IOException, SolverException {
         PuzzleRawData puzzle = new PuzzleRawData();
-        int part = 0; // 0 - nem erdekes, 1 - sorok, 2 - oszlopok
+        int part = 0;
         Integer intNum;
         for(String line; (line = this.bReader.readLine()) != null; ) {
             
@@ -55,7 +58,7 @@ public class StreamReader implements nonogramReader{
                         numbers.add(intNum);
                     }
                 }catch(NumberFormatException e){
-                    throw new SolverException("Nemvárt karakter",0);
+                    throw new SolverException("Nem várt karakter",0);
                 }
                 if(part == 2){
                     puzzle.addCol(numbers);

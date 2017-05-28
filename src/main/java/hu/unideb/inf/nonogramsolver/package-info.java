@@ -1,5 +1,5 @@
 /**
- * Nonogram-fejtő csomag
+ * Nonogram-fejtő csomag.
  *
  * @author wazemaki
  */

@@ -14,6 +14,9 @@ import javax.imageio.ImageIO;
  */
 public class ImageWriter {
     
+    /**
+     * Az írandó kép fájl-objektuma.
+     */
     private WritableImage writableImage;
     
     /**
@@ -25,7 +28,7 @@ public class ImageWriter {
     
     /**
      * Konstruktor.
-     * @param image
+     * @param image A fájlba mentendő <code>{@link WritableImage}</code> objektum.
      */
     public ImageWriter(WritableImage image){
         this.writableImage = image;
@@ -33,7 +36,7 @@ public class ImageWriter {
     
     /**
      * Konstruktor.
-     * @param image
+     * @param image A fájlba mentendő <code>{@link WritableImage}</code> objektum.
      */
     public void setImage(WritableImage image){
         this.writableImage = image;
@@ -41,8 +44,8 @@ public class ImageWriter {
     
     /**
      * Képfájl írása.
-     * @param file Az arandó file objektuma.
-     * @throws IOException
+     * @param file Az írandó file objektuma.
+     * @throws IOException Valamilyen I/O hiba lépett fel.
      */
     public void write(File file) throws IOException{
 

@@ -1,4 +1,4 @@
-package hu.unideb.inf.nonogramsolver.Controller.GUI;
+package hu.unideb.inf.nonogramsolver.GUI;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

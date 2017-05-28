@@ -1,8 +1,8 @@
 package hu.unideb.inf.nonogramsolver;
 
+import hu.unideb.inf.nonogramsolver.GUI.WindowHandler;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import static javafx.application.Application.launch;
 
@@ -15,14 +15,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/MainScene.fxml"));
-        
-        Scene scene = new Scene(loader.load());
-        
-        scene.getStylesheets().add("/styles/Styles.css");
-        
-        stage.setTitle("WM Nonogram Fejtő");
-        stage.setScene(scene);
-        stage.show();
+        WindowHandler.showWindow(loader.load(), "WM Nonogram Fejtő", null,null,null);
     }
 
     /**

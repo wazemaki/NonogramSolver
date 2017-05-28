@@ -14,7 +14,7 @@
     <children>
       <Pane layoutX="14.0" layoutY="14.0" prefHeight="149.0" prefWidth="639.0">
          <children>
-            <Label fx:id="label" alignment="CENTER" layoutX="217.0" minHeight="16" minWidth="69" prefHeight="149.0" prefWidth="422.0" text="-- Nincs megnyitva fájl --" textAlignment="CENTER" wrapText="true" />
+            <Label fx:id="label" alignment="CENTER" layoutX="217.0" minHeight="16" minWidth="69" prefHeight="149.0" prefWidth="422.0" text="&lt;Nincs megnyitva fájl&gt;" textAlignment="CENTER" wrapText="true" />
             <Button alignment="CENTER" layoutX="6.0" layoutY="1.0" mnemonicParsing="false" onAction="#openFileAction" prefHeight="26.0" prefWidth="203.0" text="Fájl megnyitása..." textAlignment="CENTER" />
             <Button alignment="CENTER" layoutX="70.0" layoutY="37.0" mnemonicParsing="false" onAction="#webImportAction" prefHeight="26.0" prefWidth="138.0" text="WebPBN Import" textAlignment="CENTER" />
             <TextField fx:id="webPbnId" layoutX="6.0" layoutY="37.0" prefHeight="26.0" prefWidth="62.0" promptText="ID" />
@@ -22,15 +22,14 @@
             <Button alignment="CENTER" layoutX="6.0" layoutY="75.0" mnemonicParsing="false" onAction="#generateAction" prefHeight="26.0" prefWidth="203.0" text="Generálás..." textAlignment="CENTER" />
          </children>
       </Pane>
-      <Pane layoutX="15.0" layoutY="163.0" prefHeight="118.0" prefWidth="639.0">
+      <Pane layoutX="15.0" layoutY="163.0" prefHeight="105.0" prefWidth="639.0">
          <children>
             <CheckBox fx:id="enBackup" layoutX="6.0" layoutY="5.0" mnemonicParsing="false" prefHeight="18.0" prefWidth="203.0" selected="true" text="Tippek engedélyezése" />
             <CheckBox fx:id="enPrior" layoutX="6.0" layoutY="23.0" mnemonicParsing="false" selected="true" text="Prioritás engedélyezése" />
-            <CheckBox layoutX="6.0" layoutY="41.0" mnemonicParsing="false" text="CheckBox" />
             <CheckBox fx:id="showGrid" layoutX="264.0" layoutY="5.0" mnemonicParsing="false" selected="true" text="Rácsok megjelenítése" />
             <CheckBox fx:id="showNumbers" layoutX="264.0" layoutY="23.0" mnemonicParsing="false" selected="true" text="Számok megjelenítése" />
-            <Button alignment="CENTER" layoutX="6.0" layoutY="91.0" mnemonicParsing="false" onAction="#startSolveAction" prefHeight="26.0" prefWidth="124.0" styleClass="highlight" text="START" textAlignment="CENTER" />
-            <Pane layoutX="264.0" layoutY="75.0">
+            <Button alignment="CENTER" layoutX="6.0" layoutY="67.0" mnemonicParsing="false" onAction="#startSolveAction" prefHeight="26.0" prefWidth="124.0" styleClass="highlight" text="START" textAlignment="CENTER" />
+            <Pane layoutX="264.0" layoutY="59.0">
                <children>
                   <TextField fx:id="winMaxW" layoutY="16.0" prefHeight="26.0" prefWidth="62.0" promptText="Szé." text="800" />
                   <TextField fx:id="winMaxH" layoutX="97.0" layoutY="16.0" prefHeight="26.0" prefWidth="62.0" promptText="Mag." text="750" />
@@ -40,7 +39,7 @@
             </Pane>
          </children>
       </Pane>
-      <TextArea fx:id="loggerArea" editable="false" layoutX="14.0" layoutY="291.0" prefHeight="149.0" prefWidth="639.0" text="-- Nonogram fejtő LOG --" wrapText="true">
+      <TextArea fx:id="loggerArea" editable="false" layoutX="14.0" layoutY="269.0" prefHeight="171.0" prefWidth="639.0" text="-- Nonogram fejtő LOG --" wrapText="true">
          <font>
             <Font name="System Italic" size="13.0" />
          </font>

@@ -129,6 +129,7 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
+                            <mainClass>${mainClass}</mainClass>
                             <executable>${java.home}/../bin/javafxpackager</executable>
                             <arguments>
                                 <argument>-createjar</argument>

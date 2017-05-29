@@ -87,6 +87,7 @@ public class MainController {
                         reader = new NONReader(file);
                         break;
                     case "application/xml":
+                    case "text/xml":
                         reader = new XMLReader(file);
                         break;
                     default:

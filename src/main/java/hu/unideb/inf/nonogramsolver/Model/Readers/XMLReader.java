@@ -92,6 +92,9 @@ public class XMLReader implements nonogramReader{
                 for(int countIndex = 0; countIndex < countElements.getLength(); countIndex++){
                     array.add(Integer.parseInt(((Element)countElements.item(countIndex)).getTextContent()));
                 }
+                if(array.isEmpty()){
+                    array.add(0);
+                }
                 if(cluesElement.getAttribute("type").equalsIgnoreCase("columns")){
                     this.puzzle.addCol(array);
                 } else {

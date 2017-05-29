@@ -120,6 +120,9 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>1.2.1</version>
+                <configuration>
+                    <mainClass>${mainClass}</mainClass>
+                </configuration>
                 <executions>
                     <execution>
                         <id>unpack-dependencies</id>
@@ -129,7 +132,6 @@
                             <goal>exec</goal>
                         </goals>
                         <configuration>
-                            <mainClass>${mainClass}</mainClass>
                             <executable>${java.home}/../bin/javafxpackager</executable>
                             <arguments>
                                 <argument>-createjar</argument>

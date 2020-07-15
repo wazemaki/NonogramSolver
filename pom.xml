@@ -198,7 +198,6 @@
                                 </requireJavaVersion>
                                 <requireProperty>
                                     <property>java.vendor</property>
-                                    <regex>^Oracle Corporation$</regex>
                                 </requireProperty>
                             </rules>
                         </configuration>

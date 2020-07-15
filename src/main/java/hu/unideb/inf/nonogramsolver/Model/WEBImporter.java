@@ -25,7 +25,7 @@ public class WEBImporter{
     /**
      * Az importáló statikus címe.
      */
-    private static final String URI = "http://webpbn.com/export.cgi";
+    private static final String URI = "https://webpbn.com/export.cgi";
     
     /**
      * Importál.
